@@ -1,0 +1,231 @@
+package Game.Round;
+
+import Game.Bet.*;
+import Game.DataDef.*;
+import Game.Grid.Grid;
+
+import static Game.Constant.GameConstant.*;
+
+import static Game.DataDef.FreeSpinStatus.*;
+import static Game.Round.Round.GambleResult.succeeded;
+
+import Game.DataDef.PlayResponse;
+import Game.Grid.*;
+import Game.Symbols.Symbol;
+
+
+public class RoundMain extends Round {
+    public RoundMain(PlayResponse playResponse, Grid grid) {
+        super(playResponse, grid);
+    }
+
+    @Override
+    public void play() {
+
+        clear();
+
+        BetMode mode = playResponse.featureMode;
+        playResponse.ended = false;
+
+        if (mode.getValue() >= BetMode.MODE_FEATURE_BUY_1.getValue()) {
+
+            playResponse.fsStatus.add(new FsStatus(mode.getValue() - BetMode.MODE_FEATURE_BUY_1.getValue() + 1, INIT));
+
+            playResponse.subGameTriggered = true;
+            playResponse.ended = false;
+            playResponse.winAmount = 0;
+            playResponse.refWinAmount = 0;
+            playResponse.action = "choice";
+
+            return;
+        }
+        // see PAR sheet v2.2 tab: free spins, cell: (A:9) //purpose of this code to throw error if ws is more than 5.
+        int numWS = runBaseSpin(0);
+        if (numWS > MAX_SCATTER_COUNT){
+            throw new IllegalStateException("numWS exceeding allowed limit");
+        }
+        return;
+    }
+
+
+    /*
+     * PAR sheet v2.2 tab: gamble, row: 15
+     * When at level 1-8, the player has a choice between collecting or gambling to get to the next higher level.
+     */
+
+    public static final int MAX_FS_LVL = 9;
+    @Override
+    public void next(boolean gamble, boolean succeed) {
+        if(playResponse.fsStatus.size() <=0)
+            throw new IllegalStateException("next called but fsStatus array is zero sized");
+
+        FsStatus prevFsStatus = playResponse.fsStatus.get(playResponse.fsStatus.size() - 1);
+        FsStatus FreeSpinsStatus;
+
+        if(prevFsStatus.level < MAX_FS_LVL && gamble){
+            GambleResult result = tryGamble(prevFsStatus.level);
+            System.out.println("[next] gamble has " + (succeeded ? "succeeded" : "failed"));
+
+            prevFsStatus.draw = result.prob;
+
+            if(succeeded){
+                prevFsStatus.freeSpinStatus = SUCCEEDED;
+                FsStatus.level = prevFsStatus.level +1;
+                FsStatus.freeSpinStatus = INIT;
+                playResponse.fsStatus.add(FreeSpinsStatus);
+
+                if(FsStatus.level > MAX_FS_LVL){
+                    System.out.println("[next] collecting since \"fs level\"("+ FsStatus.level + ") >= MAX_FS_LVL(" + MAX_FS_LVL + ")");
+                    //return collect(playResponse);
+                }
+
+               return;
+
+
+            }
+            // Else gamble failed
+            prevFsStatus.freeSpinStatus = FAILED;
+            playResponse.ended = true;
+            playResponse.subGameTriggered = false;
+            return;
+
+        }
+        // Else collect
+        //return collect(playResponse);
+    }
+    public int numWsFsLevel(int numWS){
+
+        return numWS -2;
+    }
+    @Override
+    protected void collect(PlayResponse playResponse){
+        if (playResponse.fsStatus.size() <=0)
+            throw new IllegalStateException("next called but fsStatus array is zero sized");
+        FsStatus prevFsStatus = playResponse.fsStatus.get(playResponse.fsStatus.size() - 1);
+
+        runFreeSpins(prevFsStatus.level, playResponse.baseSpin.refWinsSoFar);
+
+    }
+
+    @Override
+    protected int runBaseSpin(long refWinsSoFar) {
+        Spin baseSpin = playResponse.baseSpin;
+        grid.selectReelSet(mode, true, 0);
+        baseSpin.reelSet = grid.getReelSetName();
+        SpinResult result = spin(true, baseSpin, refWinsSoFar);//
+
+        baseSpin.refWinAmount = result.refWinAmount;  //
+
+        playResponse.subGameTriggered = false;
+        playResponse.ended = true;
+
+        if (!baseSpin.maxWinTriggered && numWS >=3){
+            FsStatus fsStatus = new FsStatus(numWsFsLevel(numWS), FreeSpinStatus.INIT);
+            FsStatus.level = numWsFsLevel(numWS);
+            FsStatus.freeSpinStatus =INIT;
+
+            playResponse.fsStatus.add(fsStatus);
+            playResponse.subGameTriggered = true;
+            playResponse.ended = false;
+        }
+        playResponse.maxWinTriggered = baseSpin.maxWinTriggered;
+        return numWS;
+    }
+//    protected int runBaseSpin(long refWinsSoFar) {
+//
+//        Spin baseSpin = playResponse.baseSpin;
+//
+//        grid.selectReelSet(mode, true, 0);
+//        baseSpin.reelSet = grid.getReelSetName();
+//
+//        Pair<Long, Integer> result = spin(true, baseSpin, refWinsSoFar);
+//
+//        long refWinAmount = result.getFirst();
+//        int numWS = result.getSecond();
+//
+//        baseSpin.refWinAmount = refWinAmount;
+//
+//        playResponse.subgameTriggered = false;
+//        playResponse.ended = true;
+//
+//        if (!baseSpin.maxWinTriggered && numWS >= 3) {
+//
+//            FsStatus fsStatus = new FsStatus(
+//                    numWsFsLevel()ToFsLevel(numWS),
+//                    FreeSpinStatus.INIT
+//            );
+//
+//            playResponse.fsStatus.add(fsStatus);
+//            playResponse.subGameTriggered = true;
+//            playResponse.ended = false;
+//        }
+//
+//        playResponse.maxWinTriggered = baseSpin.maxWinTriggered;
+//
+//        return numWS;
+//    }
+
+   // public static final int NUM_FREE_SPINS = 8;
+
+//    @Override
+//    public void runFreeSpins(int fsLevel, long refWinsSoFar) {
+//
+//        int numSpins = NUM_FREE_SPINS;
+//        long totalWins = playResponse.baseSpin.refWinAmount;
+//        long runningWinAmount = refWinsSoFar;
+//
+//        FsStatus fsStatus = playResponse.fsStatus.get(playResponse.fsStatus.size() - 1);
+//
+//        Symbol specialSym;
+//        Symbol symRemaining ;
+//
+//        grid.selectReelSet(mode, false, fsLevel);
+//        String reelSet = grid.getReelSetName();
+//
+//        Symbol symRemaining = makeSymVector();
+//        specialSym = selectSpecialSym(fsLevel, symRemaining);
+//
+//        long winsFromFS = 0;
+//        int wsFromPrevFreeSpin = 0;
+//
+//        for (int i=0; i< numSpins; i++){                            //this loop executing free spin.
+//            System.out.println("free Spin: "+i);
+//            FreeSpin freeSpin;
+
+
+            /*
+             * Adding new special symbol(s) to current FS based on WS yield from previous one
+             * PAR Sheet v2.2: tab: free spins, col: 87:
+             *     Landing 3 or more scatter symbols (WS) during free spins, gives an additional 8 spins
+             *     and activates additional special symbol(s).
+             */
+
+//            int WsFromPrevFreeSpin = 0;
+//            if (WsFromPrevFreeSpin >=3){
+//                 selectSpecialSym(numWsFsLevel(WsFromPrevFreeSpin), symRemaining, specialSym);
+//             }
+//            /* guranteed win ReelSet based on special Symbol*/.
+//
+//            if (i == numSpins -1 && winsFromFS ==0){
+//                if(specialSym.size() <=0)
+//                    throw new IllegalStateException ("no special symbols but we are in freeSpins");
+//
+//                int index = rng.getScaled(specialSym.size());
+//
+//                Symbol gWinSym = specialSym.get(index);
+//
+//                freeSpin.guaranteedWinSym = gWinSym.getCode();
+//
+//                grid.selectSpecialReelset(gWinSym);
+//
+//                reelSet = grid.getReelSetName();
+//            }
+//            freeSpin.reelSet = reelSet;
+//
+//
+//        }
+//
+//    }
+//
+
+}
