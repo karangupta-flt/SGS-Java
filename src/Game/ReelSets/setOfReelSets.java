@@ -1,6 +1,5 @@
 package Game.ReelSets;
-import java.util.List;
-import java.util.Random;
+
 import Game.Constant.GameConstant;
 
 public class setOfReelSets {
@@ -12,7 +11,6 @@ public class setOfReelSets {
         this.sets = sets;
     }
 
-    // Equivalent of: const Set* getRandomSet() const
     public Set getRandomSet() {
         if (sets == null || sets.length == 0) {
             return null; // or throw exception

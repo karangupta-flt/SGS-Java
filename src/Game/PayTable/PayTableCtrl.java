@@ -1,11 +1,10 @@
 package Game.PayTable;
 
+import Game.DataDef.Coordinate;
 import Game.DataDef.LineWinData;
 import Game.DataDef.PayTbl;
 import Game.PayLines.PayLines;
 import Game.Symbols.Symbol;
-import Game.DataDef.Coordinate;
-import Game.PayLines.PayLines;
 
 import java.util.List;
 
@@ -103,9 +102,9 @@ import java.util.List;
              "INVALID_STATE"
      );
 
-     public static int[][] PAY_TABLE(Symbol sym) {
-         return new int[0][];
-     }
+//     public static int[][] PAY_TABLE(Symbol sym) {
+//         return new int[0][];
+//     }
 
 
      public static enum STATE {

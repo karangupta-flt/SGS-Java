@@ -6,8 +6,10 @@ public class FsStatus {
     //public float Draw = -1;
     public double draw;
 
-    public FsStatus(int i, FreeSpinStatus INIT) {
+    public FsStatus(int i, FreeSpinStatus INIT) {}
+    //public FsStatus(int level,FreeSpinStatus freeSpinStatus){}
 
+    public FsStatus() {
 
     }
 

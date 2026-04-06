@@ -1,7 +1,7 @@
 package Game.ReelSets;
 
-import Game.Symbols.Symbol;
 import Game.Round.Round;
+import Game.Symbols.Symbol;
 
  public class ReelSets {
 

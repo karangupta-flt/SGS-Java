@@ -6,11 +6,11 @@ import Game.DataDef.*;
 import Game.GameConfig.GameConfig;
 import Game.Grid.Grid;
 import Game.Reel.Reel;
+import Game.ReelSets.DataReelSets;
 import Game.ReelSets.ReelSetMain;
 import Game.ReelSets.ReelSets;
 import Game.ReelSets.Set;
-import Game.Round.Round;
-import Game.ReelSets.DataReelSets;
+import Game.Round.RoundMain;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,32 +19,27 @@ import static Game.Bet.BetConfig.*;
 import static Game.Constant.GameConstant.MAX_WIN_CAP;
 
  public class GameMain extends GamePlay{
-    //@Override
-    //public void initRNG(RngOpts rngOpts) {
-      //  super.initRNG(rngOpts);
-    //}
-    Map<BetMode, Map<Integer, Boolean>> betmap = new HashMap<>();
 
-    ReelSetMain reelSets;
+     Map<BetMode, Map<Integer, Boolean>> betmap = new HashMap<>();
 
 
-    public void GamePlay() {
-        ReelSets reelSets;
-        reelSets = initReels();
-        createBetMap();
+     public void GamePlay() {
+         reelSets = initReels();
+         createBetMap();
 
-    }
+     }
+
 
     @Override
     public GameConfig getConfig() {
     GameConfig config = new GameConfig();
-    config.ReelSets(reelSets);
+    config.ReelSets = reelSets;
     return config;
     }
 
     @Override
     public void collectRands(PlayResponse response) {
-        super.collectRands(response);
+
     }
 
 
@@ -58,7 +53,7 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
     public PlayResponse Play(PlayOptions options) {
             PlayResponse playResponse = new PlayResponse();
 
-            Grid grid = new Grid(reelSets);
+            Grid grid = new Grid((ReelSetMain) reelSets);
 
             playResponse.setWinAmount(0);
             playResponse.setBetAmount(options.getBetAmount());
@@ -71,7 +66,7 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
             playResponse.setAction("spin");
 
             // Create Round object
-            Round round = new Round(playResponse, grid);
+            RoundMain round = new RoundMain(playResponse, grid);
 
             try {
                 round.play();
@@ -91,9 +86,9 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
     public PlayResponse next(NextPlay next, PlayResponse prev) {
         PlayResponse playResponse = new PlayResponse();
 
-        Grid grid = new Grid(reelSets);
+        Grid grid = new Grid((ReelSetMain) reelSets);
 
-        Round round = new Round(playResponse, grid);
+        RoundMain round = new RoundMain(playResponse, grid);
 
 //        private void logNextArguments(NextPlay next, playResponse prev) {
 //
@@ -111,7 +106,7 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
 //        }
 
         try {
-            round.next(next.getGamble());
+            round.next((Boolean) next.getGamble(), false);
             collectRands(playResponse);
             playResponse.setRefWinAmount(calculateWins(playResponse));
         }
@@ -127,7 +122,9 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
         return playResponse;
     }
 
-    public void applyCurrencyMultiplier(PlayResponse r) {
+
+
+     public void applyCurrencyMultiplier(PlayResponse r) {
 
         long currMp = r.currencyMultiplier;
 
@@ -175,10 +172,15 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
 
         for (Spin freeSpin : playResponse.freeSpins) {
             refWinAmount += freeSpin.refWinAmount;
-        }
 
-        if (refWinAmount >= maxWinAmount) return maxWinAmount;
-        return refWinAmount;
+        }
+        if (refWinAmount >= maxWinAmount) {
+            return maxWinAmount;
+        } else {
+            return refWinAmount;
+        }
+        //return (refWinAmount >= maxWinAmount) ? maxWinAmount : refWinAmount;
+
     }
 
     public long getRefBetBase(PlayOptions options){
@@ -348,4 +350,7 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
         }
         betmap.put(BetMode.MODE_FEATURE_BUY_3, betMap);
     }
+
+//     public void play() {
+//     }
  }

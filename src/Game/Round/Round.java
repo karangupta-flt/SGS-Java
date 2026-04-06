@@ -1,11 +1,13 @@
 package Game.Round;
-import java.util.List;
-import java.util.ArrayList;
-import Game.DataDef.PlayResponse;
-import Game.Symbols.Symbol;
-import Game.DataDef.Spin;
+
 import Game.DataDef.FreeSpin;
+import Game.DataDef.PlayResponse;
+import Game.DataDef.Spin;
 import Game.Grid.Grid;
+import Game.Symbols.Symbol;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public  class Round {
 
@@ -51,7 +53,7 @@ public  class Round {
         public static long refWinAmount = 0;
     }
 
-    public void next(Object gamble) {}
+
 
 
     // Replace reel symbols

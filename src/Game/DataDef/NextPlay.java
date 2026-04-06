@@ -4,7 +4,7 @@ public class NextPlay {
 
         public boolean Gamble;
 
-        public Object getGamble() {
+        public Object getGamble()  {
                 return null;
         }
 }

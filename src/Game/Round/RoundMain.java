@@ -1,17 +1,14 @@
 package Game.Round;
 
-import Game.Bet.*;
-import Game.DataDef.*;
+import Game.Bet.BetMode;
+import Game.DataDef.FreeSpinStatus;
+import Game.DataDef.FsStatus;
+import Game.DataDef.PlayResponse;
+import Game.DataDef.Spin;
 import Game.Grid.Grid;
 
-import static Game.Constant.GameConstant.*;
-
+import static Game.Constant.GameConstant.MAX_SCATTER_COUNT;
 import static Game.DataDef.FreeSpinStatus.*;
-import static Game.Round.Round.GambleResult.succeeded;
-
-import Game.DataDef.PlayResponse;
-import Game.Grid.*;
-import Game.Symbols.Symbol;
 
 
 public class RoundMain extends Round {
@@ -60,10 +57,11 @@ public class RoundMain extends Round {
             throw new IllegalStateException("next called but fsStatus array is zero sized");
 
         FsStatus prevFsStatus = playResponse.fsStatus.get(playResponse.fsStatus.size() - 1);
-        FsStatus FreeSpinsStatus;
+        FsStatus FreeSpinsStatus = new FsStatus();
 
         if(prevFsStatus.level < MAX_FS_LVL && gamble){
             GambleResult result = tryGamble(prevFsStatus.level);
+            boolean succeeded = result.succeeded;
             System.out.println("[next] gamble has " + (succeeded ? "succeeded" : "failed"));
 
             prevFsStatus.draw = result.prob;
@@ -131,6 +129,8 @@ public class RoundMain extends Round {
         playResponse.maxWinTriggered = baseSpin.maxWinTriggered;
         return numWS;
     }
+
+
 //    protected int runBaseSpin(long refWinsSoFar) {
 //
 //        Spin baseSpin = playResponse.baseSpin;

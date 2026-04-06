@@ -10,12 +10,13 @@ public class PlayOptions {
     public String Action;
     public boolean buyFeature;
 
-    public PlayOptions(int FeatureMode, long betAmount, long refBetAmount, long currencyMultiplier, String Action, boolean buyFeature){
+    public PlayOptions(int FeatureMode, long betAmount, long currencyMultiplier, boolean buyFeature){
         this.FeatureMode = FeatureMode;
-        this.refBetAmount = refBetAmount;
+        this.betAmount = betAmount;
         this.currencyMultiplier = currencyMultiplier;
-        this.Action = Action;
         this.buyFeature = buyFeature;
+        //this.refBetAmount = refBetAmount;
+        //this.Action = Action;
     }
 
     public long getCurrencyMultiplier() {
@@ -33,6 +34,14 @@ public class PlayOptions {
     }
 
     public BetMode getFeatureMode() {
+        return null;
+    }
+
+    public long getRefBetAmount(){
+        return 0L;
+    }
+
+    public String getAction(){
         return null;
     }
 }
