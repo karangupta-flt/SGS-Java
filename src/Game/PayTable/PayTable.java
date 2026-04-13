@@ -15,14 +15,18 @@ import java.util.List;
         super(symbol, payout, count);
     }
 
+//     public PayTable() {
+//         super();
+//     }
+
 //     public static int[][] get(Symbol sym) {
 //
 //         return new int[0][];
 //     }
 
 
-     @Override
-    public int evaluateLine(Symbol[][] window, int[][] lines, int id, LineWinData winData) {
+
+     public static void evaluateLine(Symbol[][] GridWindow, int[][] lines, int id, LineWinData winData) {
 
         Symbol matchedSym = Symbol.INVALID;
         Token token;
@@ -31,13 +35,13 @@ import java.util.List;
         int totalCount = 0;
         int WSCount = 0;
 
-        /*This code walks through a payLine from left to right and checks if the symbols
+         /*This code walks through a payLine from left to right and checks if the symbols
           form a winning combination while handling wild symbols correctly.
-        */
+         */
 
         for (int x = 0; x < GameConstant.REEL_COUNT; x++) {
             int y = lines[id][x];
-            Symbol sym = window[x][y];
+            Symbol sym = GridWindow[x][y];
 
             if (sym == Symbol.WS) {
                 token = Token.SYM_WD;
@@ -47,8 +51,8 @@ import java.util.List;
                 token = Token.SYM_NX;
             }
 
+            prev = state;
             state = nextState(token, state);
-
 
             if ((state == STATE.WILD || state == STATE.WILD_2) && sym == Symbol.WS) {
                 WSCount++;
@@ -81,11 +85,10 @@ import java.util.List;
         winData.WSCount = WSCount;
 
 
-        return totalCount;
     }
 
 
-    protected STATE nextState(Token token, STATE state) {
+    protected static STATE nextState(Token token, STATE state) {
         STATE next = STATE.INVALID_STATE;
 
         switch (state) {

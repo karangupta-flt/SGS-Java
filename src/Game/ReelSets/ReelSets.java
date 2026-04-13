@@ -9,8 +9,8 @@ import Game.Symbols.Symbol;
         protected Set[] FS_Set;
         protected Round round;
         protected Set selected;
-        protected setOfReelSets BG;
-        protected setOfReelSets FS;
+        protected SetOfReelSets BG;
+        protected SetOfReelSets FS;
         public int[] stops;
 
         public ReelSets (Set[] BG_Set, Set[] FS_Set) {

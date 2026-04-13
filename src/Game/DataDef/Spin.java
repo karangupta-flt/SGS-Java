@@ -1,46 +1,52 @@
 package Game.DataDef;
-import Game.Symbols.Symbol;
+
 import Game.Constant.GameConstant;
+import Game.Symbols.Symbol;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Spin {
+import static Game.Constant.GameConstant.GRID_HEIGHT;
+import static Game.Constant.GameConstant.REEL_COUNT;
+
+ public class Spin {
 
         public String reelSet;
         public long winAmount = 0;
         public long refWinAmount = 0;
         public long winsSoFar = 0;
         public long refWinsSoFar = 0;
-        public Symbol[][] symbol = new Symbol[GameConstant.REEL_COUNT][GameConstant.GRID_HEIGHT];
-
+        public Symbol[][] GridWindow = new Symbol [GRID_HEIGHT][REEL_COUNT];
         public List<Winning> winnings = new ArrayList<>();
-        public int[] stops = new int[GameConstant.REEL_COUNT];
-        public List<SymCoordinate> WSSym = new ArrayList<>();
-        public boolean maxWinTriggered = false;
 
-        public Spin(String reelSet,
-                    long winAmount,
-                    long refWinAmount,
-                    long winsSoFar,
-                    long refWinsSoFar,
-                    Symbol symbols,
-                    List winnings,
-                    int[] stops,
-                    List WSSym,
-                    boolean maxWinTriggered) {
-                this.reelSet = reelSet;
-                this.winAmount = winAmount;
-                this.refWinAmount = refWinAmount;
-                this.winsSoFar = winsSoFar;
-                this.refWinsSoFar = refWinsSoFar;
-                this.symbol = symbol;
-                this.winnings = winnings;
-                this.stops = stops;
-                this.WSSym = WSSym;
-                this.maxWinTriggered = maxWinTriggered;
+        public int[] stops = new int[GameConstant.REEL_COUNT];
+        public SymCoordinate[] wsSym;
+        public boolean maxWinTriggered = false;
+//
+//        public Spin(String reelSet,
+//                    long winAmount,
+//                    long refWinAmount,
+//                    long winsSoFar,
+//                    long refWinsSoFar,
+//                    Symbol GridWindow,
+//                    List winnings,
+//                    int[] stops,
+//                    SymCoordinate [] WSSym,
+//                    boolean maxWinTriggered) {
+//                this.reelSet = reelSet;
+//                this.winAmount = winAmount;
+//                this.refWinAmount = refWinAmount;
+//                this.winsSoFar = winsSoFar;
+//                this.refWinsSoFar = refWinsSoFar;
+//                this.winnings = winnings;
+//                this.stops = stops;
+//                this.WSSym = WSSym;
+//              this.maxWinTriggered = maxWinTriggered;
+//        }
+
+
+        public Spin(){
         }
-        public Spin(){}
 }
 
 

@@ -11,6 +11,7 @@ import Game.ReelSets.ReelSetMain;
 import Game.ReelSets.ReelSets;
 import Game.ReelSets.Set;
 import Game.Round.RoundMain;
+import Game.Grid.GridMain;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,17 +54,17 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
     public PlayResponse Play(PlayOptions options) {
             PlayResponse playResponse = new PlayResponse();
 
-            Grid grid = new Grid((ReelSetMain) reelSets);
+            GridMain grid = new GridMain((ReelSetMain) reelSets);
 
-            playResponse.setWinAmount(0);
-            playResponse.setBetAmount(options.getBetAmount());
-            playResponse.setRefBetBase(getRefBetBase(options));
+            playResponse.winAmount = 0;
+            playResponse.betAmount= options.betAmount;
+            playResponse.refBetBase = getRefBetBase(options);
 
-            playResponse.setRefBetAmount(playResponse.getRefBetBase() * options.getCurrencyMultiplier());
+            playResponse.refBetAmount = playResponse.refBetBase * options.currencyMultiplier;
 
-            playResponse.setCurrencyMultiplier(options.getCurrencyMultiplier());
-            playResponse.setFeatureMode(options.getFeatureMode());
-            playResponse.setAction("spin");
+            playResponse.currencyMultiplier = options.currencyMultiplier;
+            playResponse.featureMode = options.featureMode;
+            playResponse.action = "spin";
 
             // Create Round object
             RoundMain round = new RoundMain(playResponse, grid);
@@ -71,7 +72,7 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
             try {
                 round.play();
                 collectRands(playResponse);
-                playResponse.setRefWinAmount(calculateWins(playResponse));
+                playResponse.refWinAmount = calculateWins (playResponse);
             }
             catch (Exception e) {
                 System.err.println("Exception caught: " + e.getMessage());
@@ -86,29 +87,14 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
     public PlayResponse next(NextPlay next, PlayResponse prev) {
         PlayResponse playResponse = new PlayResponse();
 
-        Grid grid = new Grid((ReelSetMain) reelSets);
+        GridMain grid = new GridMain((ReelSetMain) reelSets);
 
         RoundMain round = new RoundMain(playResponse, grid);
-
-//        private void logNextArguments(NextPlay next, playResponse prev) {
-//
-//            System.out.println("---------------------------------------------------");
-//            System.out.println("next arguments:");
-//
-//            System.out.printf("next.gamble             = %d%n", next.getGamble());
-//            System.out.printf("prev.betAmount          = %d%n", prev.getBetAmount());
-//            System.out.printf("prev.refBetAmount       = %d%n", prev.getRefBetAmount());
-//            System.out.printf("prev.refBetBase         = %d%n", prev.getRefBetBase());
-//            System.out.printf("prev.featureMode        = %d%n", prev.getFeatureMode());
-//            System.out.printf("prev.currencyMultiplier = %d%n", prev.getCurrencyMultiplier());
-//
-//            System.out.println("---------------------------------------------------");
-//        }
 
         try {
             round.next((Boolean) next.getGamble(), false);
             collectRands(playResponse);
-            playResponse.setRefWinAmount(calculateWins(playResponse));
+            playResponse.refWinAmount = calculateWins(playResponse);
         }
         catch (Exception e) {
             System.err.println("Exception caught: " + e.getMessage());
@@ -186,7 +172,7 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
     public long getRefBetBase(PlayOptions options){
         long betAmount =          options.betAmount;
         long currencyMultiplier = options.currencyMultiplier;
-        long FeatureMode =        options.FeatureMode;
+        long FeatureMode =        options.featureMode;
         boolean buyFeature =      options.buyFeature;
 
 

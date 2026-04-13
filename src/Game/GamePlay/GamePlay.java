@@ -1,13 +1,10 @@
 package Game.GamePlay;
 
-import Game.Bet.BetMode;
 import Game.DataDef.NextPlay;
 import Game.DataDef.PlayOptions;
 import Game.DataDef.PlayResponse;
 import Game.GameConfig.GameConfig;
 import Game.ReelSets.ReelSets;
-
-import java.util.Map;
 
  public abstract class GamePlay {
     protected ReelSets reelSets;

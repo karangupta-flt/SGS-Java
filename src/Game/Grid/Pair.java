@@ -33,21 +33,15 @@ public class Pair<K, V> {
         public String toString() {
             return "(" + first + ", " + second + ")";
         }
-    }
 
 
-//import Game.DataDef.SpecialSymWins;
-//import Game.Symbols.Symbol;
-//
-//public class Pair<L extends Number, B> {
-//
-//    public Pair <Long, Boolean> getWinsFromSpSym(
-//            Symbol sym,
-//            SpecialSymWins specialSymWins,
-//            long refBetBase,
-//            long refWinsSoFar) {
-//
-//
-//        return new Pair<>(0L, false);
+//    public K getKey() {
+//        return Key;
 //    }
-//}
+//
+//    public V getValue() {
+//        return null;
+//    }
+}
+
+

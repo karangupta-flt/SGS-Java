@@ -9,12 +9,10 @@ public class Reel {
         protected final Symbol[] reel;
         protected final int id;
         protected int stop = -1;
-        //protected final RngLib rng;
 
-        public Reel(int index, Symbol[] symbols ) {   //RngLib rng
+        public Reel(int index, Symbol[] symbols ) {
             this.id = index;
             this.reel = symbols;
-            //this.rng = rng;
         }
 
         public int size() {
@@ -57,11 +55,6 @@ public class Reel {
             return reel;
         }
 
-//       public int spin() {
-//            int rnd = rng.nextInt(reel.size());
-//       }
-//           return setStop(rnd);
-//       // }
 
         public void setRoundRef(Round round) {
 

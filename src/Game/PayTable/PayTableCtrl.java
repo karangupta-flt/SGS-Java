@@ -102,12 +102,8 @@ import java.util.List;
              "INVALID_STATE"
      );
 
-//     public static int[][] PAY_TABLE(Symbol sym) {
-//         return new int[0][];
-//     }
 
-
-     public static enum STATE {
+     public enum STATE {
          INIT,
          WILD,
          WILD_2,
@@ -116,35 +112,31 @@ import java.util.List;
          INVALID_STATE,
      }
 
-     ;
 
-     public static enum Token {
+     public enum Token {
          SYM_WD,
          SYM_N1,
          SYM_NX,
          SYM_END,
      }
 
-     ;
+
 
      public static int[][] lines() {
          return PayLines.PAY_LINES;
      }
 
 
-     public static int evaluateLine(Symbol[][] window, int[] lines, int id, LineWinData winData) {
-         return id;
+     public static void evaluateLine(Symbol[][] window, int[] lines, int id, LineWinData winData) {
      }
 
      public static List<Coordinate> getCoords(int[] lines, int symCount) {
          return null;
      }
 
-     public int evaluateLine(Symbol[][] window, int[][] lines, int id, LineWinData winData) {
-         return 0;
-     }
 
-     protected STATE nextState(Token token, STATE state) {
+
+     protected static STATE nextState(Token token, STATE state) {
          return null;
 
      }

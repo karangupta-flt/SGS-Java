@@ -8,14 +8,12 @@ import Game.Round.Round;
         public final String name;
         public Reel[] reel;
 
-        // protected RngLib rng;
-
         // Constructor
         public Set(int id, String name, Reel[] reel) {
             this.id = id;
             this.name = name;
             this.reel = reel;
-            //Random Rng= rng;
+
         }
 
 
@@ -26,9 +24,9 @@ import Game.Round.Round;
         }
 
         // Set Round reference for all reels
-        public void setRoundRef(Round Round) {
+        public void setRoundRef(Round round) {
             for (Reel reel : reel) {    // for each loop.
-                reel.setRoundRef(Round);
+                reel.setRoundRef(round);
             }
         }
 

@@ -3,15 +3,15 @@ package Game.DataDef;
 import Game.Bet.BetMode;
 
 public class PlayOptions {
-    public int FeatureMode;
+    public int featureMode;
     public long betAmount;
     public long refBetAmount;
     public long currencyMultiplier;
     public String Action;
     public boolean buyFeature;
 
-    public PlayOptions(int FeatureMode, long betAmount, long currencyMultiplier, boolean buyFeature){
-        this.FeatureMode = FeatureMode;
+    public PlayOptions(int featureMode, long betAmount, long currencyMultiplier, boolean buyFeature){
+        this.featureMode = featureMode;
         this.betAmount = betAmount;
         this.currencyMultiplier = currencyMultiplier;
         this.buyFeature = buyFeature;

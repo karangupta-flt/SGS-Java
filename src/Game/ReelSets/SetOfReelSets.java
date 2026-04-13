@@ -2,11 +2,11 @@ package Game.ReelSets;
 
 import Game.Constant.GameConstant;
 
-public class setOfReelSets {
+public class SetOfReelSets {
 
     public final Set[] sets;
 
-    public setOfReelSets(Set[] sets) {
+    public SetOfReelSets(Set[] sets) {
 
         this.sets = sets;
     }

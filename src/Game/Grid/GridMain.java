@@ -2,6 +2,7 @@ package Game.Grid;
 
 import Game.Constant.GameConstant;
 import Game.DataDef.*;
+import Game.PayTable.PayTable;
 import Game.PayTable.PayTableCtrl;
 import Game.Reel.Reel;
 import Game.ReelSets.ReelSetMain;
@@ -35,7 +36,7 @@ public class GridMain extends Grid {
             for (int j = 0; j < GameConstant.GRID_HEIGHT; j++) {
 
                 Symbol sym = reel.symbolAt(stops[i] + j);
-                window[i][j] = sym;
+                GridWindow[i][j] = sym;
 
                 if (sym == Symbol.WS) {
 
@@ -54,7 +55,7 @@ public class GridMain extends Grid {
     public void snapshot(Symbol[][] grid) {
         for(int i =0; i< GameConstant.REEL_COUNT; i++){
             for(int j = 0; j< GameConstant.GRID_HEIGHT; j++){
-                grid[i][j] = window[i][j];
+                grid[i][j] = GridWindow[i][j];
             }
 
         }
@@ -71,7 +72,9 @@ public class GridMain extends Grid {
             int[] line = lines[i];
             LineWinData winData = new LineWinData();
 
-            PayTableCtrl.evaluateLine(window, line, i, winData);
+
+            //PayTable payTable = new PayTable();
+            PayTable.evaluateLine(GridWindow, lines, i, winData);
 
             Symbol symbol = winData.symbol;
             int totalCount = winData.totalCount;
@@ -118,12 +121,12 @@ public class GridMain extends Grid {
         int[][] PayLines = PayTableCtrl.lines();
         int[] payTblItem = PayTableCtrl.PAY_TABLE[sym.getId()];
 
-        Symbol[][] newGrid = new Symbol[window.length][window[0].length];
-        for (int i = 0; i < window.length; i++) {
-                for (int j = 0; j < window[i].length; j++) {
-                    newGrid[i][j] = window[i][j];
-                }
+        Symbol[][] newGrid = new Symbol[GridWindow.length][GridWindow[0].length];
+        for (int i = 0; i < GridWindow.length; i++) {
+            for (int j = 0; j < GridWindow[i].length; j++) {
+                    newGrid[i][j] = GridWindow[i][j];
             }
+        }
 
         int symCount = 0;
 
@@ -133,7 +136,7 @@ public class GridMain extends Grid {
 
                 for (int j = 0; j < GameConstant.GRID_HEIGHT; j++) {
 
-                    if (window[i][j] != sym)
+                    if (GridWindow[i][j] != sym)
                         continue;
 
                     hasSym = true;
@@ -161,7 +164,7 @@ public class GridMain extends Grid {
             long refWinAmount = 0;
             long runningWinAmount = refWinsSoFar;
             boolean maxWinTriggered = refWinsSoFar >= maxWinAmount;
-            Winning win = null;
+            Winning win = new Winning();
 
             int multi  = payTblItem[symCount - 2];
             if (multi == 0 || maxWinTriggered)
@@ -169,7 +172,7 @@ public class GridMain extends Grid {
 
             for (int i = 0; i< PayLines.length; i++){
                 win.type = "speacial";
-                win.payLines = i;
+                win.payLine = i;
                 win.dir = "ltr";
                 win.symbol = sym;
                 win.symCount = symCount;
@@ -194,9 +197,9 @@ public class GridMain extends Grid {
             specialSymWins.refWinAmount = refWinAmount;
             specialSymWins.refWinSoFar = runningWinAmount;
 
-            //return new pair<>(refWinAmount, maxWinTriggered);
+            return new Pair<>(refWinAmount, maxWinTriggered);
 
-        return null;
+
     }
 
     boolean isSymOnWinLine(Symbol sym, int x, int y, final List <Winning> winnings) {

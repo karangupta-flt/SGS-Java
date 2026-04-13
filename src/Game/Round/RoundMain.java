@@ -1,18 +1,18 @@
 package Game.Round;
 
 import Game.Bet.BetMode;
-import Game.DataDef.FreeSpinStatus;
-import Game.DataDef.FsStatus;
-import Game.DataDef.PlayResponse;
-import Game.DataDef.Spin;
+import Game.DataDef.*;
 import Game.Grid.Grid;
+import Game.Grid.Pair;
+import Game.Grid.GridMain;
 
 import static Game.Constant.GameConstant.MAX_SCATTER_COUNT;
+import static Game.Constant.GameConstant.MAX_WIN_CAP;
 import static Game.DataDef.FreeSpinStatus.*;
 
 
 public class RoundMain extends Round {
-    public RoundMain(PlayResponse playResponse, Grid grid) {
+    public RoundMain(PlayResponse playResponse, GridMain grid) {
         super(playResponse, grid);
     }
 
@@ -21,12 +21,12 @@ public class RoundMain extends Round {
 
         clear();
 
-        BetMode mode = playResponse.featureMode;
+        mode = playResponse.featureMode;
         playResponse.ended = false;
 
-        if (mode.getValue() >= BetMode.MODE_FEATURE_BUY_1.getValue()) {
+        if ( mode >= BetMode.MODE_FEATURE_BUY_1.getValue()) {
 
-            playResponse.fsStatus.add(new FsStatus(mode.getValue() - BetMode.MODE_FEATURE_BUY_1.getValue() + 1, INIT));
+            playResponse.fsStatus.add(new FsStatus(mode - BetMode.MODE_FEATURE_BUY_1.getValue() + 1, INIT));
 
             playResponse.subGameTriggered = true;
             playResponse.ended = false;
@@ -60,11 +60,13 @@ public class RoundMain extends Round {
         FsStatus FreeSpinsStatus = new FsStatus();
 
         if(prevFsStatus.level < MAX_FS_LVL && gamble){
-            GambleResult result = tryGamble(prevFsStatus.level);
-            boolean succeeded = result.succeeded;
+            Pair<Boolean, Float> result = tryGamble(prevFsStatus.level);
+            boolean succeeded = result.getFirst();
+            float prob = result.getSecond();
             System.out.println("[next] gamble has " + (succeeded ? "succeeded" : "failed"));
 
-            prevFsStatus.draw = result.prob;
+            prevFsStatus.draw = result.getSecond();
+
 
             if(succeeded){
                 prevFsStatus.freeSpinStatus = SUCCEEDED;
@@ -78,8 +80,6 @@ public class RoundMain extends Round {
                 }
 
                return;
-
-
             }
             // Else gamble failed
             prevFsStatus.freeSpinStatus = FAILED;
@@ -110,9 +110,10 @@ public class RoundMain extends Round {
         Spin baseSpin = playResponse.baseSpin;
         grid.selectReelSet(mode, true, 0);
         baseSpin.reelSet = grid.getReelSetName();
-        SpinResult result = spin(true, baseSpin, refWinsSoFar);//
-
-        baseSpin.refWinAmount = result.refWinAmount;  //
+        Pair<Long, Integer> result = Spin(true, baseSpin, refWinsSoFar);
+        long refWinAmount = result.getFirst();
+        int numWS = result.getSecond();
+        baseSpin.refWinAmount = result.getFirst();
 
         playResponse.subGameTriggered = false;
         playResponse.ended = true;
@@ -226,6 +227,29 @@ public class RoundMain extends Round {
 //        }
 //
 //    }
-//
+
+
+    @Override
+    public Pair<Long,Integer> Spin(boolean baseGame, Spin s, long refWinsSoFar) {
+
+        grid.Spin(baseGame, s.stops, s.wsSym);
+
+        long maxWinAmount = playResponse.refBetBase * MAX_WIN_CAP;
+
+        long refWinAmount = grid.getWinnings((Winning) s.winnings, playResponse.refBetBase);
+
+        boolean maxWinTriggered = (refWinsSoFar + refWinAmount) >= maxWinAmount;
+
+        refWinAmount = maxWinTriggered ? maxWinAmount - refWinsSoFar : refWinAmount;
+
+        s.maxWinTriggered = maxWinTriggered;
+        s.refWinsSoFar = refWinsSoFar + refWinAmount;
+
+        grid.snapshot(s.GridWindow);
+
+        int numWS = s.wsSym.length;
+
+        return new Pair<>(refWinAmount, numWS);
+    }
 
 }
