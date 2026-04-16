@@ -6,7 +6,7 @@ import Game.PayTable.PayTable;
 import Game.PayTable.PayTableCtrl;
 import Game.Reel.Reel;
 import Game.ReelSets.ReelSetMain;
-import Game.ReelSets.ReelSets;
+
 import Game.Symbols.Symbol;
 
 import java.util.List;
@@ -16,8 +16,8 @@ import static Game.Bet.BetConfig.CREDITS_PER_BET;
 public class GridMain extends Grid {
     //ReelSets reelSets;
 
-    public GridMain(ReelSets reelSets) {
-        super((ReelSetMain) reelSets);
+    public GridMain(ReelSetMain reelSets) {
+        super(reelSets);
 
     }
 
@@ -29,7 +29,7 @@ public class GridMain extends Grid {
         Reel[] reels = reelSets.getSelected().getReels();
         reelSets.Spin(baseGame, stops);
 
-        for (int i = 0; i < stops.length; i++) {
+        for (int i = 0; i < reels.length; i++) {
 
             Reel reel = reels[i];
 
@@ -51,18 +51,20 @@ public class GridMain extends Grid {
         System.out.println("fresh spin");
     }
 
+
+
     @Override
-    public void snapshot(Symbol[][] grid) {
-        for(int i =0; i< GameConstant.REEL_COUNT; i++){
-            for(int j = 0; j< GameConstant.GRID_HEIGHT; j++){
-                grid[i][j] = GridWindow[i][j];
+    public void snapshot(Symbol [][] GridWindow) {
+        for(int i =0; i< GridWindow.length; i++){
+            for(int j = 0; j< GridWindow[i].length; j++) {
+                GridWindow[i][j] = GridWindow[i][j];
             }
 
         }
     }
 
     @Override
-    public long getWinnings(Winning winnings, long refBetBase) {
+    public long getWinnings(List<Winning> winnings, long refBetBase) {
 
         int[][] lines = PayTableCtrl.lines();
         long refWinAmount = 0;

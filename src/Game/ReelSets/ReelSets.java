@@ -5,8 +5,8 @@ import Game.Symbols.Symbol;
 
  public class ReelSets {
 
-        protected Set[] BG_Set;
-        protected Set[] FS_Set;
+        public Set[] BG_Set;
+        public Set[] FS_Set;
         protected Round round;
         protected Set selected;
         protected SetOfReelSets BG;

@@ -5,10 +5,12 @@ import Game.Symbols.Symbol;
 
 public class Reel {
 
-        protected Game.Round.Round Round;
+
+    protected Game.Round.Round Round;
         protected final Symbol[] reel;
         protected final int id;
         protected int stop = -1;
+        public int length;
 
         public Reel(int index, Symbol[] symbols ) {
             this.id = index;

@@ -30,18 +30,18 @@ public class PlayOptions {
 
     public long getBetAmount() {
 
-        return 0;
+        return betAmount;
     }
 
-    public BetMode getFeatureMode() {
-        return null;
+    public int getFeatureMode() {
+        return featureMode;
     }
 
     public long getRefBetAmount(){
-        return 0L;
+        return refBetAmount;
     }
 
     public String getAction(){
-        return null;
+        return Action;
     }
 }

@@ -4,11 +4,9 @@ import Game.Bet.BetConfig;
 import Game.Bet.BetMode;
 import Game.DataDef.*;
 import Game.GameConfig.GameConfig;
-import Game.Grid.Grid;
 import Game.Reel.Reel;
 import Game.ReelSets.DataReelSets;
 import Game.ReelSets.ReelSetMain;
-import Game.ReelSets.ReelSets;
 import Game.ReelSets.Set;
 import Game.Round.RoundMain;
 import Game.Grid.GridMain;
@@ -21,14 +19,55 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
 
  public class GameMain extends GamePlay{
 
-     Map<BetMode, Map<Integer, Boolean>> betmap = new HashMap<>();
+     private Map<BetMode, Map<Integer, Boolean>> betmap = new HashMap<>();
 
 
-     public void GamePlay() {
+
+     public GameMain() {
          reelSets = initReels();
          createBetMap();
 
      }
+
+     @Override
+     public void createBetMap() {
+
+         // NORMAL
+         Map<Integer, Boolean> betMap = new HashMap<>();
+         for (int i : BET_NORMAL_ARRAY) {
+             betMap.put(i, true);
+         }
+         betmap.put(BetMode.MODE_NORMAL, betMap);
+
+         // ENHANCED
+         betMap = new HashMap<>();
+         for (int i : BET_ENHANCED_ARRAY) {
+             betMap.put(i, true);
+         }
+         betmap.put(BetMode.MODE_ENHANCED, betMap);
+
+         // FEATURE BUY 1
+         betMap = new HashMap<>();
+         for (int i : BET_FB1_ARRAY) {
+             betMap.put(i, true);
+         }
+         betmap.put(BetMode.MODE_FEATURE_BUY_1, betMap);
+
+         // FEATURE BUY 2
+         betMap = new HashMap<>();
+         for (int i : BET_FB2_ARRAY) {
+             betMap.put(i, true);
+         }
+         betmap.put(BetMode.MODE_FEATURE_BUY_2, betMap);
+
+         // FEATURE BUY 3
+         betMap = new HashMap<>();
+         for (int i : BET_FB3_ARRAY) {
+             betMap.put(i, true);
+         }
+         betmap.put(BetMode.MODE_FEATURE_BUY_3, betMap);
+     }
+
 
 
     @Override
@@ -54,7 +93,8 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
     public PlayResponse Play(PlayOptions options) {
             PlayResponse playResponse = new PlayResponse();
 
-            GridMain grid = new GridMain((ReelSetMain) reelSets);
+
+            GridMain grid = new GridMain(reelSets);
 
             playResponse.winAmount = 0;
             playResponse.betAmount= options.betAmount;
@@ -70,7 +110,7 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
             RoundMain round = new RoundMain(playResponse, grid);
 
             try {
-                round.play();
+                round.Play();
                 collectRands(playResponse);
                 playResponse.refWinAmount = calculateWins (playResponse);
             }
@@ -83,11 +123,12 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
             return playResponse;
         }
 
+
     @Override
     public PlayResponse next(NextPlay next, PlayResponse prev) {
         PlayResponse playResponse = new PlayResponse();
 
-        GridMain grid = new GridMain((ReelSetMain) reelSets);
+        GridMain grid = new GridMain(reelSets);
 
         RoundMain round = new RoundMain(playResponse, grid);
 
@@ -169,39 +210,44 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
 
     }
 
-    public long getRefBetBase(PlayOptions options){
-        long betAmount =          options.betAmount;
-        long currencyMultiplier = options.currencyMultiplier;
-        long FeatureMode =        options.featureMode;
-        boolean buyFeature =      options.buyFeature;
+     public long getRefBetBase(PlayOptions options){
 
+         long betAmount = options.betAmount;
+         long currencyMultiplier = options.currencyMultiplier;
+         long featureMode = options.featureMode;
+         boolean buyFeature = options.buyFeature;
 
-        BetMode mode = BetMode.values()[(int) FeatureMode];
-        if (!betmap.containsKey(mode)) {
-            throw new IllegalArgumentException("invalid featureMode");
-        }
+         if (featureMode < 0 || featureMode >= BetMode.values().length){
+             throw new IllegalArgumentException("invalid featureMode");
+         }
+         BetMode mode = BetMode.values()[(int) featureMode];
+         if (betmap == null || betmap.isEmpty()) {
+             throw new IllegalStateException("betmap not initialized");
+         }
 
-        if ((!buyFeature && FeatureMode != 0) ||
-                (buyFeature && FeatureMode == 0)) {
-            throw new IllegalArgumentException("incompatible feature mode and buy");
-        }
+         if (!betmap.containsKey(mode)) {
+             throw new IllegalArgumentException("invalid featureMode: " + mode);
+         }
 
-        Map<Integer, Boolean> betSizeMap = betmap.get(mode);
+         if ((!buyFeature && featureMode != 0) ||
+                 (buyFeature && featureMode == 0)) {
+             throw new IllegalArgumentException("incompatible feature mode and buy");
+         }
 
-        long normalizedBetAmount = betAmount / currencyMultiplier;
+         Map<Integer, Boolean> betSizeMap = betmap.get(mode);
 
-        if (!betSizeMap.containsKey(normalizedBetAmount)) {
-            throw new IllegalArgumentException("invalid bet size");
-        }
+         int normalizedBetAmount = (int)(betAmount / currencyMultiplier);
 
-        BetConfig config = ALL_BETS_CONFIG.get((int)FeatureMode);
+         if (!betSizeMap.containsKey(normalizedBetAmount)) {
+             throw new IllegalArgumentException("invalid bet size");
+         }
 
-        return (normalizedBetAmount * CREDITS_PER_BET) / config.cost;
+         BetConfig config = ALL_BETS_CONFIG.get((int)featureMode);
 
+         return ((long) normalizedBetAmount * CREDITS_PER_BET) / config.cost;
+     }
 
-    }
-
-    public ReelSets initReels() {
+    public ReelSetMain initReels() {
 
         Set BG_Set1 = new Set(0, "BG_ReelSet1",
                 new Reel[]{
@@ -285,57 +331,22 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
                 new Reel[]{
                         new Reel(0, DataReelSets.FS_Set5_REEL1),
                         new Reel(1, DataReelSets.FS_Set5_REEL2),
-                        new Reel(2, DataReelSets.FS_Set1_REEL3),
-                        new Reel(3, DataReelSets.FS_Set1_REEL4),
+                        new Reel(2, DataReelSets.FS_Set5_REEL3),
+                        new Reel(3, DataReelSets.FS_Set5_REEL4),
                         new Reel(4, DataReelSets.FS_Set5_REEL5)
                 }
 
         );
 
-        return new ReelSets(
+        return new ReelSetMain(
                 new Set[] {BG_Set1, BG_Set2, BG_Set3},
                 new Set[] {FS_Set1, FS_Set2, FS_Set3, FS_Set4, FS_Set5}
         );
     }
 
-    @Override
-    public void createBetMap() {
 
-        // NORMAL
-        Map<Integer, Boolean> betMap = new HashMap<>();
-        for (int i : BET_NORMAL_ARRAY) {
-            betMap.put(i, true);
-        }
-        betmap.put(BetMode.MODE_NORMAL, betMap);
 
-        // ENHANCED
-        betMap = new HashMap<>();
-        for (int i : BET_ENHANCED_ARRAY) {
-            betMap.put(i, true);
-        }
-        betmap.put(BetMode.MODE_ENHANCED, betMap);
 
-        // FEATURE BUY 1
-        betMap = new HashMap<>();
-        for (int i : BET_FB1_ARRAY) {
-            betMap.put(i, true);
-        }
-        betmap.put(BetMode.MODE_FEATURE_BUY_1, betMap);
-
-        // FEATURE BUY 2
-        betMap = new HashMap<>();
-        for (int i : BET_FB2_ARRAY) {
-            betMap.put(i, true);
-        }
-        betmap.put(BetMode.MODE_FEATURE_BUY_2, betMap);
-
-        // FEATURE BUY 3
-        betMap = new HashMap<>();
-        for (int i : BET_FB3_ARRAY) {
-            betMap.put(i, true);
-        }
-        betmap.put(BetMode.MODE_FEATURE_BUY_3, betMap);
-    }
 
 //     public void play() {
 //     }

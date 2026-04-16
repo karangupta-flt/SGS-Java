@@ -4,10 +4,11 @@ import Game.DataDef.NextPlay;
 import Game.DataDef.PlayOptions;
 import Game.DataDef.PlayResponse;
 import Game.GameConfig.GameConfig;
+import Game.ReelSets.ReelSetMain;
 import Game.ReelSets.ReelSets;
 
  public abstract class GamePlay {
-    protected ReelSets reelSets;
+    protected ReelSetMain reelSets;
 
 
     public abstract GameConfig getConfig();

@@ -13,10 +13,10 @@ public class PlayResponse {
     public long refBetBase;
     public int featureMode;
     public boolean subGameTriggered;
-    public static boolean ended = false;
+    public boolean ended = false;
     public long winAmount = 0;
     public long refWinAmount = 0;
-    public static List<FsStatus> fsStatus = new ArrayList<>();
+    public List<FsStatus> fsStatus = new ArrayList<>();
     public String action;
     public BaseSpin baseSpin;
     public List<FreeSpin> freeSpins = new ArrayList<>();
@@ -25,6 +25,8 @@ public class PlayResponse {
     public Internal internal;
 
     public PlayResponse() {
+        this.baseSpin =  new BaseSpin();
+
     }
 
     // =======================
@@ -87,4 +89,10 @@ public class PlayResponse {
 //    public void getCurrencyMultiplier() {}
 //
 //
+
+    public void printResponse () {
+        System.out.println("refBetBase :" + this.refBetBase);
+        System.out.println("winAmount :" + this.winAmount);
+        System.out.println("refWinAmount :" + this.refWinAmount);
+    }
 }

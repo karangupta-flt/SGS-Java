@@ -22,27 +22,28 @@ import static Game.Constant.GameConstant.REEL_COUNT;
         public int[] stops = new int[GameConstant.REEL_COUNT];
         public SymCoordinate[] wsSym;
         public boolean maxWinTriggered = false;
-//
-//        public Spin(String reelSet,
-//                    long winAmount,
-//                    long refWinAmount,
-//                    long winsSoFar,
-//                    long refWinsSoFar,
-//                    Symbol GridWindow,
-//                    List winnings,
-//                    int[] stops,
-//                    SymCoordinate [] WSSym,
-//                    boolean maxWinTriggered) {
-//                this.reelSet = reelSet;
-//                this.winAmount = winAmount;
-//                this.refWinAmount = refWinAmount;
-//                this.winsSoFar = winsSoFar;
-//                this.refWinsSoFar = refWinsSoFar;
-//                this.winnings = winnings;
-//                this.stops = stops;
-//                this.WSSym = WSSym;
-//              this.maxWinTriggered = maxWinTriggered;
-//        }
+
+        public Spin(String reelSet,
+                    long winAmount,
+                    long refWinAmount,
+                    long winsSoFar,
+                    long refWinsSoFar,
+                    Symbol [][] GridWindow,
+                    List winnings,
+                    int[] stops,
+                    SymCoordinate [] wsSym,
+                    boolean maxWinTriggered) {
+                this.reelSet = reelSet;
+                this.winAmount = winAmount;
+                this.refWinAmount = refWinAmount;
+                this.winsSoFar = winsSoFar;
+                this.refWinsSoFar = refWinsSoFar;
+                this.GridWindow = GridWindow;
+                this.winnings = winnings;
+                this.stops = stops;
+                this.wsSym = wsSym;
+                this.maxWinTriggered = maxWinTriggered;
+        }
 
 
         public Spin(){

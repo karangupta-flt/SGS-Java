@@ -30,7 +30,7 @@ import Game.Grid.GridMain;
             this.grid = grid;
         }
         // Start round
-        public void play() {}
+        public void Play() {}
         public void next(boolean gamble, boolean succeed) {}
 
         // Base spin execution

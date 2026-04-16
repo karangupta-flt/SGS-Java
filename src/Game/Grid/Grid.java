@@ -52,7 +52,7 @@ import java.util.List;
         return GridWindow[i][j];
     }
 
-    public long getWinnings(Winning winning, long refBetBase) {
+    public long getWinnings(List<Winning> winning, long refBetBase) {
         return 0L;
     }
 
@@ -66,7 +66,7 @@ import java.util.List;
         reelSets.setRoundRef(round);
     }
 
-    public void snapshot(Symbol[][] grid) {}
+    public void snapshot(Symbol[][] GridWindow) {}
 
     private Pair<Symbol,Integer> evaluateWinOptions(List<Symbol> symLine){
         Symbol symbol = null;

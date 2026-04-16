@@ -1,10 +1,12 @@
 package Game.Round;
 
 import Game.Bet.BetMode;
+import Game.Constant.GameConstant;
 import Game.DataDef.*;
-import Game.Grid.Grid;
+
 import Game.Grid.Pair;
 import Game.Grid.GridMain;
+
 
 import static Game.Constant.GameConstant.MAX_SCATTER_COUNT;
 import static Game.Constant.GameConstant.MAX_WIN_CAP;
@@ -17,7 +19,7 @@ public class RoundMain extends Round {
     }
 
     @Override
-    public void play() {
+    public void Play() {
 
         clear();
 
@@ -41,7 +43,6 @@ public class RoundMain extends Round {
         if (numWS > MAX_SCATTER_COUNT){
             throw new IllegalStateException("numWS exceeding allowed limit");
         }
-        return;
     }
 
 
@@ -85,7 +86,6 @@ public class RoundMain extends Round {
             prevFsStatus.freeSpinStatus = FAILED;
             playResponse.ended = true;
             playResponse.subGameTriggered = false;
-            return;
 
         }
         // Else collect
@@ -107,9 +107,14 @@ public class RoundMain extends Round {
 
     @Override
     protected int runBaseSpin(long refWinsSoFar) {
-        Spin baseSpin = playResponse.baseSpin;
+        BaseSpin baseSpin = playResponse.baseSpin;
+        if (baseSpin == null) {
+            baseSpin = new BaseSpin();
+            playResponse.baseSpin = baseSpin;
+        }
         grid.selectReelSet(mode, true, 0);
         baseSpin.reelSet = grid.getReelSetName();
+
         Pair<Long, Integer> result = Spin(true, baseSpin, refWinsSoFar);
         long refWinAmount = result.getFirst();
         int numWS = result.getSecond();
@@ -132,39 +137,7 @@ public class RoundMain extends Round {
     }
 
 
-//    protected int runBaseSpin(long refWinsSoFar) {
-//
-//        Spin baseSpin = playResponse.baseSpin;
-//
-//        grid.selectReelSet(mode, true, 0);
-//        baseSpin.reelSet = grid.getReelSetName();
-//
-//        Pair<Long, Integer> result = spin(true, baseSpin, refWinsSoFar);
-//
-//        long refWinAmount = result.getFirst();
-//        int numWS = result.getSecond();
-//
-//        baseSpin.refWinAmount = refWinAmount;
-//
-//        playResponse.subgameTriggered = false;
-//        playResponse.ended = true;
-//
-//        if (!baseSpin.maxWinTriggered && numWS >= 3) {
-//
-//            FsStatus fsStatus = new FsStatus(
-//                    numWsFsLevel()ToFsLevel(numWS),
-//                    FreeSpinStatus.INIT
-//            );
-//
-//            playResponse.fsStatus.add(fsStatus);
-//            playResponse.subGameTriggered = true;
-//            playResponse.ended = false;
-//        }
-//
-//        playResponse.maxWinTriggered = baseSpin.maxWinTriggered;
-//
-//        return numWS;
-//    }
+
 
    // public static final int NUM_FREE_SPINS = 8;
 
@@ -232,11 +205,17 @@ public class RoundMain extends Round {
     @Override
     public Pair<Long,Integer> Spin(boolean baseGame, Spin s, long refWinsSoFar) {
 
+        //safety check
+        if (s.stops == null){
+            s.stops = new int[GameConstant.REEL_COUNT];
+        }
+        if (s.wsSym == null){
+            s.wsSym = new SymCoordinate[50];
+        }
         grid.Spin(baseGame, s.stops, s.wsSym);
 
         long maxWinAmount = playResponse.refBetBase * MAX_WIN_CAP;
-
-        long refWinAmount = grid.getWinnings((Winning) s.winnings, playResponse.refBetBase);
+        long refWinAmount = grid.getWinnings(s.winnings, playResponse.refBetBase);
 
         boolean maxWinTriggered = (refWinsSoFar + refWinAmount) >= maxWinAmount;
 
@@ -247,7 +226,11 @@ public class RoundMain extends Round {
 
         grid.snapshot(s.GridWindow);
 
-        int numWS = s.wsSym.length;
+        int numWS = 0;
+        for (SymCoordinate sym : s.wsSym){
+            if(sym != null) numWS++;
+
+        }
 
         return new Pair<>(refWinAmount, numWS);
     }
