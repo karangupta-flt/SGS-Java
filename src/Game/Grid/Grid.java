@@ -13,19 +13,19 @@ import java.util.List;
 
     //public ReelSets reelSets;
     protected ReelSetMain reelSets;
-    protected Symbol[][] GridWindow;   // Grid window (5x3)
+    protected Symbol[][] window;   // Grid window (5x3)
     protected Round round;
 
     public Grid(ReelSetMain reelSets) {
         this.reelSets = reelSets;
-        this.GridWindow = new Symbol[5][3];
+        this.window = new Symbol[5][3];
     }
 //public Grid(ReelSetMain reelSets) {
 //    this.reelSets = reelSets;
 //    this.window = new Symbol[5][3];
 //}
 
-    public void Spin(boolean baseGame, int[] stops, SymCoordinate[] wsSym) {}
+    public void Spin(boolean baseGame, int[] stops, List<SymCoordinate> wsSym) {}
 
     public void selectReelSet(int mode, boolean baseSpin, int fsLevel) {
 
@@ -44,12 +44,12 @@ import java.util.List;
 
     public void setSymbol(int i, int j, Symbol sym) {
 
-        GridWindow[i][j] = sym;
+        window[i][j] = sym;
     }
 
     public Symbol getSymbol(int i, int j) {
 
-        return GridWindow[i][j];
+        return window[i][j];
     }
 
     public long getWinnings(List<Winning> winning, long refBetBase) {

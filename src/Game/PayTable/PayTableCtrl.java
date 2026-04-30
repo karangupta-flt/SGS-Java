@@ -127,12 +127,12 @@ import java.util.List;
      }
 
 
-     public static void evaluateLine(Symbol[][] window, int[] lines, int id, LineWinData winData) {
-     }
+//     public static void evaluateLine(Symbol[][] window, int[] payLine, int id, LineWinData winData) {
+//     }
 
-     public static List<Coordinate> getCoords(int[] lines, int symCount) {
-         return null;
-     }
+//     public static List<Coordinate> getCoords(int[] payLine, int symCount) {
+//         return null;
+//     }
 
 
 

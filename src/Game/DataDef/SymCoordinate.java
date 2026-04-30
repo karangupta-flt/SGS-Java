@@ -12,4 +12,8 @@ public class SymCoordinate {
         this.y = y;
         this.symbol = symbol;
     }
+
+    public String toString(){
+        return("symCoordinate : " +this.x + ", " + this.y +"," + this.symbol);
+    }
 }

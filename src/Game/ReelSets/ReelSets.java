@@ -19,13 +19,16 @@ import Game.Symbols.Symbol;
         }
         public ReelSets(){}
 
-        public void select(int mode, boolean baseSpin, int fsLevel) {};
+        public  void select(int mode, boolean baseSpin, int fsLevel) {};
 
-        public void selectSpecialReelSet(Symbol specialSymbol) {}
+        public  void selectSpecialReelSet(Symbol specialSymbol) {}
 
-        public void Spin(boolean baseGame, int[] stops) {}
+        public  void Spin(boolean baseGame, int[] stops) {
+                throw new RuntimeException("Parent ReelSets Spin() called by mistake");
 
-        public void setRoundRef(Round round) {
+        }
+
+        public  void setRoundRef(Round round) {
                 this.round = round;
 
                 for (Set set : BG_Set) {
@@ -38,8 +41,8 @@ import Game.Symbols.Symbol;
         }
 
 
-        public void getStops(int[] stops) {
-               this.stops = stops;
+        public int[] getStops() {
+            return new int[0];
         }
 
         public Set getSelected() {

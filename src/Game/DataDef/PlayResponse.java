@@ -1,8 +1,7 @@
 package Game.DataDef;
 
-import Game.Bet.BetMode;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PlayResponse {
@@ -23,76 +22,43 @@ public class PlayResponse {
     public boolean maxWinTriggered = false;
     public long currencyMultiplier = -1;
     public Internal internal;
+    public long winSoFar = 0;
+    public long refWinSoFar= 0;
 
     public PlayResponse() {
-        this.baseSpin =  new BaseSpin();
+      this.baseSpin =  new BaseSpin();
 
     }
-
-    // =======================
-    // Getters & Setters
-    // =======================
-
-//    public void setWinAmount(long winAmount) {
-//
-//        this.winAmount = winAmount;
-//    }
-//
-//    public long getWinAmount() {
-//        return winAmount;
-//    }
-//
-//    public void setBetAmount(long betAmount) {
-//
-//        this.betAmount = betAmount;
-//    }
-//
-//    public void setRefBetBase(long refBetBase) {
-//        this.refBetBase = refBetBase;
-//    }
-//
-//    public long getRefBetBase() {
-//        return refBetBase;
-//    }
-//
-//    public void setRefBetAmount(long refBetAmount) {
-//        this.refBetAmount = refBetAmount;
-//    }
-//
-//    public void setCurrencyMultiplier(long currencyMultiplier) {
-//
-//        this.currencyMultiplier = currencyMultiplier;
-//    }
-//
-//    public void setFeatureMode(BetMode featureMode) {
-//        this.featureMode = featureMode;
-//    }
-//
-//    public void setAction(String action) {
-//        this.action = action;
-//    }
-//
-//    public void setRefWinAmount(long refWinAmount) {
-//        this.refWinAmount = refWinAmount;
-//    }
-//
-//    public BaseSpin getBaseSpin() {
-//        return baseSpin;
-//    }
-//
-//    public void getBetAmount() {}
-//
-//    public void getFeatureMode() {}
-//
-//    public void getRefBetAmount() {}
-//
-//    public void getCurrencyMultiplier() {}
-//
-//
 
     public void printResponse () {
+        System.out.println("betAmount : "+ this.betAmount);
+        System.out.println("currencyMultiplier: " + this.currencyMultiplier);
         System.out.println("refBetBase :" + this.refBetBase);
+        System.out.println("refBetAmount :"+ refBetAmount);
         System.out.println("winAmount :" + this.winAmount);
         System.out.println("refWinAmount :" + this.refWinAmount);
+        System.out.println("maxWinTriggered : " + this.maxWinTriggered);
+        System.out.println("ended : " + this.ended);
+        System.out.println("action : "+ this.action);
+        System.out.println("featureMode :" + this.featureMode);
+        System.out.println("subGameTriggered : " + this.subGameTriggered);
+        System.out.println("winSoFar :" + this.winSoFar);
+        System.out.println("refWinSoFar :"+ this.refWinSoFar);
+        System.out.println("SpinType :" + this.baseSpin.spinType);
+        System.out.println("GridWindow :"+ Arrays.deepToString(this.baseSpin.window));
+        System.out.println("winnings :" + this.baseSpin.winnings);
+        System.out.println("stops positions : "+ Arrays.toString(this.baseSpin.stops));
+//        System.out.println("Size of symCoordinateVec: " + this.wsSym.size());
+//        for (SymCoordinate coord : this.wsSym) {
+//            System.out.println("wsSym : "+ coord);
+
+      //  }
+        //System.out.println("wsSym : "+ wsSym);
+
+
+
+
     }
+
+
 }

@@ -1,4 +1,5 @@
 package Game.GamePlay;
+import Game.DataDef.BaseSpin;
 import Game.DataDef.PlayOptions;
 import Game.DataDef.PlayResponse;
 
@@ -11,12 +12,13 @@ public class Main {
         int betAmount = 10;
         long currencyMultiplier = 1;
         boolean buyFeature = false;
+        long refBetAmount = 0;
+        //String Action ;
 
         System.out.println("Variables successfully initialized\n\n");
 
-        PlayOptions opts = new PlayOptions(featureMode, betAmount, currencyMultiplier, buyFeature);
+        PlayOptions opts = new PlayOptions(featureMode, betAmount, currencyMultiplier, buyFeature, refBetAmount);
         System.out.println("PlayOptions successfully ran\n\n");
-
 
         PlayResponse res = game.Play(opts);
         System.out.println("Game Played called Successfully\n\n");
@@ -24,7 +26,12 @@ public class Main {
 
         res.printResponse();
         System.out.println("Game Response Printed Successfully\n\n");
+
+
+
+
     }
+
 }
 
 

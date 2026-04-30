@@ -1,5 +1,7 @@
 package Game.Grid;
 
+import Game.DataDef.BaseSpin;
+
 public class Pair<K, V> {
 
     private K first;
@@ -11,7 +13,9 @@ public class Pair<K, V> {
         this.second = second;
         }
 
-        // Getters
+
+
+    // Getters
         public K getFirst() {
             return first;
         }

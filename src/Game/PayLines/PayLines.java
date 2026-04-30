@@ -5,8 +5,8 @@ import Game.Constant.GameConstant;
     public static final int NUM_PAYLINES = 10;
 
 
-    public int[] payLine = new int[GameConstant.REEL_COUNT];
-    public int[][] payLines = new int[NUM_PAYLINES][GameConstant.REEL_COUNT];
+    public static int[] payLine = new int[GameConstant.REEL_COUNT];
+    public static int[][] payLines = new int[NUM_PAYLINES][GameConstant.REEL_COUNT];
 
     public static final int[][] PAY_LINES_LIST = {
             { 1, 1, 1, 1, 1 },

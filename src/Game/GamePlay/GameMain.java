@@ -13,6 +13,7 @@ import Game.Grid.GridMain;
 
 import java.util.HashMap;
 import java.util.Map;
+import Game.Grid.Pair;
 
 import static Game.Bet.BetConfig.*;
 import static Game.Constant.GameConstant.MAX_WIN_CAP;
@@ -78,23 +79,16 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
     }
 
     @Override
-    public void collectRands(PlayResponse response) {
-
-    }
+    public void collectRands(PlayResponse response) {}
 
 
     @Override
-    public void init() {
-
-        return;
-    }
+    public void init() {}
 
     @Override
     public PlayResponse Play(PlayOptions options) {
-            PlayResponse playResponse = new PlayResponse();
-
-
-            GridMain grid = new GridMain(reelSets);
+         PlayResponse playResponse = new PlayResponse();
+         GridMain grid = new GridMain(reelSets);
 
             playResponse.winAmount = 0;
             playResponse.betAmount= options.betAmount;
@@ -119,6 +113,8 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
                 e.printStackTrace();
                 throw e;
             }
+
+            applyCurrencyMultiplier(playResponse);
 
             return playResponse;
         }
@@ -343,11 +339,4 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
                 new Set[] {FS_Set1, FS_Set2, FS_Set3, FS_Set4, FS_Set5}
         );
     }
-
-
-
-
-
-//     public void play() {
-//     }
  }

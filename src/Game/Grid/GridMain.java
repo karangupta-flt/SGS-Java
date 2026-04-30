@@ -6,16 +6,20 @@ import Game.PayTable.PayTable;
 import Game.PayTable.PayTableCtrl;
 import Game.Reel.Reel;
 import Game.ReelSets.ReelSetMain;
+import Game.PayLines.PayLines;
 
 import Game.Symbols.Symbol;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static Game.Bet.BetConfig.CREDITS_PER_BET;
+import static Game.PayLines.PayLines.*;
 
 public class GridMain extends Grid {
     //ReelSets reelSets;
-
+    Symbol[] all = Symbol.values();
+    Reel obj = new Reel(0, all);
     public GridMain(ReelSetMain reelSets) {
         super(reelSets);
 
@@ -23,24 +27,26 @@ public class GridMain extends Grid {
 
 
     @Override //this code is for grid window.
-    public void Spin(boolean baseGame, int[] stops, SymCoordinate[] wsSym) {
+    public void Spin(boolean baseGame, int[] stops, List<SymCoordinate> wsSym) {
         int count = 0;
 
         Reel[] reels = reelSets.getSelected().getReels();
         reelSets.Spin(baseGame, stops);
+//        System.out.println("after reelSets.Spin");
+//        System.out.println(Arrays.toString(stops));
 
-        for (int i = 0; i < reels.length; i++) {
+//        for (int i = 0; i< stops.length; i++){
+//            System.out.println("Reel" + i + "stop = "+ reels[i].stopPos());
+//        }
 
+        for (int i = 0; i < stops.length; i++) {
             Reel reel = reels[i];
-
             for (int j = 0; j < GameConstant.GRID_HEIGHT; j++) {
-
                 Symbol sym = reel.symbolAt(stops[i] + j);
-                GridWindow[i][j] = sym;
+                window[i][j] = sym;
 
                 if (sym == Symbol.WS) {
-
-                    wsSym[count] = new SymCoordinate(i, j, sym);
+                    wsSym.add (new SymCoordinate(i, j, sym));
                         count++;
 
 
@@ -52,31 +58,46 @@ public class GridMain extends Grid {
     }
 
 
-
+//    public void fillWindow(Symbol[][]window) {
+//        System.out.println(Arrays.toString(all)+ " "+ "this is the symbol");
+//        int n = window.length, m = window[0].length, size = all.length;
+//        for (int i = 0; i < n; i++) {
+//            for (int j = 0; j < m; j++) {
+//                window[i][j] = all[obj.Spin()%size];
+//            }
+//        }
+//        System.out.println("one dimension array is successfully print");
+//    }
     @Override
-    public void snapshot(Symbol [][] GridWindow) {
-        for(int i =0; i< GridWindow.length; i++){
-            for(int j = 0; j< GridWindow[i].length; j++) {
-                GridWindow[i][j] = GridWindow[i][j];
+    public void snapshot(Symbol [][] grid) {
+        //Symbol[][] window= new Symbol[GameConstant.REEL_COUNT][GameConstant.GRID_HEIGHT];
+        //fillWindow(window);
+        for(int i =0; i< window.length; i++){
+            for(int j = 0; j< window[i].length; j++) {
+                grid[i][j]=window[i][j];
+                //GridWindow[i][j] = GridWindow[i][j];
+//                System.out.println(grid[i][j] + " ");
             }
-
+            //System.out.println();
         }
     }
+
 
     @Override
     public long getWinnings(List<Winning> winnings, long refBetBase) {
 
-        int[][] lines = PayTableCtrl.lines();
+        PayLines.payLines = PayTableCtrl.lines();  //all payLines
         long refWinAmount = 0;
 
-        for (int i = 0; i < lines.length; i++) {
-
-            int[] line = lines[i];
+        for (int i = 0; i < payLines.length; i++) {
+            System.out.println("Evalutaing payline : "+ i+ "\n");
+            PayLines.payLine = payLines[i];                 //current payLine
+            for (int j = 0; j < PayLines.payLine.length; j++) {
+                System.out.println("payline : "+ payLine[j]);
+            }
             LineWinData winData = new LineWinData();
 
-
-            //PayTable payTable = new PayTable();
-            PayTable.evaluateLine(GridWindow, lines, i, winData);
+            PayTable.evaluateLine(window, payLine, i, winData);
 
             Symbol symbol = winData.symbol;
             int totalCount = winData.totalCount;
@@ -93,10 +114,8 @@ public class GridMain extends Grid {
             long currWinAmount = refBetBase * multi / CREDITS_PER_BET;
 
             if (currWinAmount != 0) {
-
                 Winning win = new Winning();
-
-                win.payLine = i;
+                win.payLine = i ;
                 win.dir = "ltr";
 
                 if (wsMulti > symMulti) {
@@ -108,25 +127,34 @@ public class GridMain extends Grid {
                 }
                 win.multiplier = multi;
                 win.refWinAmount = currWinAmount;
-                win.coords = PayTableCtrl.getCoords(line, win.symCount);
+                win.coords = PayTable.getCoords(PayLines.payLine,wsMulti > symMulti ? WSCount : totalCount);
                 refWinAmount += win.refWinAmount;
 
+
                 winnings.add(win);
+
+
             }
+
         }
 
         return refWinAmount;
+
+
+
     }
+
+
 
     public Pair<Long, Boolean> getWinsFromSpSym(Symbol sym, SpecialSymWins specialSymWins, long refBetBase, long refWinsSoFar) {
 
         int[][] PayLines = PayTableCtrl.lines();
         int[] payTblItem = PayTableCtrl.PAY_TABLE[sym.getId()];
 
-        Symbol[][] newGrid = new Symbol[GridWindow.length][GridWindow[0].length];
-        for (int i = 0; i < GridWindow.length; i++) {
-            for (int j = 0; j < GridWindow[i].length; j++) {
-                    newGrid[i][j] = GridWindow[i][j];
+        Symbol[][] newGrid = new Symbol[window.length][window[0].length];
+        for (int i = 0; i < window.length; i++) {
+            for (int j = 0; j < window[i].length; j++) {
+                    newGrid[i][j] = window[i][j];
             }
         }
 
@@ -138,7 +166,7 @@ public class GridMain extends Grid {
 
                 for (int j = 0; j < GameConstant.GRID_HEIGHT; j++) {
 
-                    if (GridWindow[i][j] != sym)
+                    if (window[i][j] != sym)
                         continue;
 
                     hasSym = true;
@@ -158,7 +186,7 @@ public class GridMain extends Grid {
 
             if (symCount < 2 ||  payTblItem[symCount - 2] <=0 ){
 
-            specialSymWins.Symbols = newGrid;
+            specialSymWins.window = newGrid;
                 return new Pair<>(0L, false);
             }
 
@@ -214,5 +242,7 @@ public class GridMain extends Grid {
         }
         return false;
     }
+
+
 
 }

@@ -10,7 +10,7 @@ public class Reel {
         protected final Symbol[] reel;
         protected final int id;
         protected int stop = -1;
-        public int length;
+        //public int length;
 
         public Reel(int index, Symbol[] symbols ) {
             this.id = index;
@@ -42,19 +42,23 @@ public class Reel {
             return setStop(stop + m);
         }
 
-        public int stopPosition() {
-
+        public int stopPos() {
             return stop;
         }
 
-        public Symbol symbolAt(int position) {
+        public Symbol symbolAt(int pos) {
 
-            return reel[position % reel.length];
+            return reel[pos % reel.length];
         }
 
         public Symbol[] getReel() {
-
             return reel;
+        }
+
+        public int Spin() {
+            stop = (int)(Math.random() * reel.length);
+            //System.out.println("inside Reel Stop : "+ stop);
+            return stop;
         }
 
 
@@ -64,11 +68,7 @@ public class Reel {
         }
 
 
-    public int Spin() {
-        return 0;
-    }
 
-    public int stopPos() {
-        return 0;
-    }
+
+
 }

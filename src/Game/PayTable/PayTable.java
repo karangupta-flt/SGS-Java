@@ -26,7 +26,7 @@ import java.util.List;
 
 
 
-     public static void evaluateLine(Symbol[][] GridWindow, int[][] lines, int id, LineWinData winData) {
+     public static void evaluateLine(Symbol[][] window, int[] payLine, int id, LineWinData winData) {
 
         Symbol matchedSym = Symbol.INVALID;
         Token token;
@@ -40,8 +40,8 @@ import java.util.List;
          */
 
         for (int x = 0; x < GameConstant.REEL_COUNT; x++) {
-            int y = lines[id][x];
-            Symbol sym = GridWindow[x][y];
+            int y = payLine[x];
+            Symbol sym = window[x][y];
 
             if (sym == Symbol.WS) {
                 token = Token.SYM_WD;
@@ -54,9 +54,15 @@ import java.util.List;
             prev = state;
             state = nextState(token, state);
 
+            if(state == STATE.COMPLETED || state == STATE.INVALID_STATE){
+                break;
+            }
+
+
             if ((state == STATE.WILD || state == STATE.WILD_2) && sym == Symbol.WS) {
                 WSCount++;
             }
+
             if (state == STATE.MATCHING) {
                 switch (prev) {
                     case INIT:
@@ -77,9 +83,9 @@ import java.util.List;
 
                 }
             }
-
-
+//            if (state == STATE.COMPLETED) break;
         }
+
         winData.symbol = matchedSym;
         winData.totalCount = totalCount;
         winData.WSCount = WSCount;
@@ -91,16 +97,17 @@ import java.util.List;
     protected static STATE nextState(Token token, STATE state) {
         STATE next = STATE.INVALID_STATE;
 
+
         switch (state) {
             case INIT:
                 next = token == Token.SYM_WD ? STATE.WILD : STATE.MATCHING;
                 break;
             case WILD:
             case WILD_2:
-                next = token == token.SYM_WD ? STATE.WILD_2 : STATE.MATCHING;
+                next = token == Token.SYM_WD ? STATE.WILD_2 : STATE.MATCHING;
                 break;
             case MATCHING:
-                next = token == token.SYM_N1 ? STATE.COMPLETED : STATE.MATCHING;
+                next = token == Token.SYM_N1 ? STATE.MATCHING : STATE.INVALID_STATE;
                 break;
             case COMPLETED:
                 next = STATE.COMPLETED;
@@ -113,11 +120,14 @@ import java.util.List;
         return next;
     }
 
-    public static List<Coordinate> getCoords(int[] line, int symCount) {
+    public static List<Coordinate> getCoords(int[] payLine, int symCount) {
         List<Coordinate> coords = new ArrayList<>();
         for (int reel = 0; reel < symCount; reel++) {
-            coords.add(new Coordinate(reel, line[reel]));
+            coords.add(new Coordinate(reel, payLine[reel]));
+
+
         }
+
         return coords;
 
     }

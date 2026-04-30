@@ -1,22 +1,25 @@
 package Game.ReelSets;
 
 import Game.Bet.BetMode;
+import Game.Constant.GameConstant;
 import Game.Reel.Reel;
+import Game.Round.Round;
 import Game.Symbols.Symbol;
+//import Game.Reel.ReelMain;
 
 
 
 
  public class ReelSetMain extends ReelSets{
 
-     private static final Set BG_Set1 = new Set(0, "BG_Set1", new Reel[0]);
-     private static final Set BG_Set2 = new Set(1, "BG_Set2", new Reel[0]);
-     private static final Set BG_Set3 = new Set(2, "BG_Set3", new Reel[0]);
-     private static final Set FS_Set1 = new Set(3, "FS_Set1", new Reel[0]);
-     private static final Set FS_Set2 = new Set(4, "FS_Set2", new Reel[0]);
-     private static final Set FS_Set3 = new Set(5, "FS_Set3", new Reel[0]);
-     private static final Set FS_Set4 = new Set(6, "FS_Set4", new Reel[0]);
-     private static final Set FS_Set5 = new Set(7, "FS_Set5", new Reel[0]);
+//     private static final Set BG_Set1 = new Set(0, "BG_Set1", new Reel[0]);
+//     private static final Set BG_Set2 = new Set(1, "BG_Set2", new Reel[0]);
+//     private static final Set BG_Set3 = new Set(2, "BG_Set3", new Reel[0]);
+//     private static final Set FS_Set1 = new Set(3, "FS_Set1", new Reel[0]);
+//     private static final Set FS_Set2 = new Set(4, "FS_Set2", new Reel[0]);
+//     private static final Set FS_Set3 = new Set(5, "FS_Set3", new Reel[0]);
+//     private static final Set FS_Set4 = new Set(6, "FS_Set4", new Reel[0]);
+//     private static final Set FS_Set5 = new Set(7, "FS_Set5", new Reel[0]);
 
 
 
@@ -73,7 +76,7 @@ import Game.Symbols.Symbol;
             // It's a free spin
             double weight = W_FREE_SPIN[fsLevel - 1];
 
-            selected = (prob < weight) ? FS_Set1 : FS_Set2;
+            selected = (prob < weight) ? FS_Set[0] : FS_Set[1];
 
             System.out.println("[reelSet] selected reel set \"" + selected.getName() + "\"");
 
@@ -81,10 +84,10 @@ import Game.Symbols.Symbol;
         //else it's a base spin.
         double weight = (Mode == BetMode.MODE_NORMAL.ordinal() ? W_NORMAL_PROB : W_ENHANCED_PROB);
         if (Mode == BetMode.MODE_NORMAL.ordinal()){
-            selected = (prob < weight) ? BG_Set1 : BG_Set2;
+            selected = (prob < weight) ? BG_Set[0] : BG_Set[1];
         }
         else {
-            selected = (prob < weight) ? BG_Set1 : BG_Set3;
+            selected = (prob < weight) ? BG_Set[0] : BG_Set[2];
         }
         System.out.println("[reelSet] selected reel set \"" + selected.getName() + "\"");
 
@@ -127,23 +130,32 @@ import Game.Symbols.Symbol;
      @Override
      public void Spin(boolean baseGame, int[] stops) {
         Reel[] reels = selected.getReels();
-
         for (int i = 0; i < reels.length; i++) {
             Reel reel = reels[i];
             int stop = reel.Spin();
             stops[i] = stop;
+           // System.out.println("stop position : "+ stops[i]);
         }
 
+
     }
+
+
 
      @Override
-     public void getStops(int[] stops) {
+     public int[] getStops() {
 
-             Reel[] reels = selected.getReels();
+         Reel[] reels = selected.getReels();
+         int[] stops = new int[GameConstant.REEL_COUNT];
 
-             for (int i = 0; i < reels.length; i++) {
-                 Reel reel = reels[i];
-                 stops[i] = reel.stopPos();
-             }
-    }
+
+         for (int i = 0; i < reels.length; i++) {
+             Reel reel = reels[i];
+             stops[i] = reel.stopPos();
+             System.out.println("reading stop = " +reel.stopPos());
+
+
+         }
+         return stops;
+     }
  }

@@ -1,12 +1,15 @@
 package Game.DataDef;
 
-import Game.Symbols.Symbol;
-
-import java.util.List;
 
 public class BaseSpin extends Spin {
     public final String spinType = "BaseSpin";
 
-    public BaseSpin() {
+    public BaseSpin(){
+        super();
+    }
+
+
+    public void printBaseSpin(){
+        System.out.println("baseSpin"+ this.spinType);
     }
 }
