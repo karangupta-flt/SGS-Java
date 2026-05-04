@@ -1,7 +1,6 @@
 package Game.GamePlay;
-import Game.DataDef.BaseSpin;
-import Game.DataDef.PlayOptions;
-import Game.DataDef.PlayResponse;
+import Game.DataDef.*;
+import Game.Grid.Grid;
 
 public class Main {
 
@@ -14,6 +13,9 @@ public class Main {
         boolean buyFeature = false;
         long refBetAmount = 0;
         //String Action ;
+
+
+
 
         System.out.println("Variables successfully initialized\n\n");
 

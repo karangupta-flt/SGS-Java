@@ -9,8 +9,6 @@ import Game.ReelSets.ReelSetMain;
 import Game.PayLines.PayLines;
 
 import Game.Symbols.Symbol;
-
-import java.util.Arrays;
 import java.util.List;
 
 import static Game.Bet.BetConfig.CREDITS_PER_BET;
@@ -32,6 +30,7 @@ public class GridMain extends Grid {
 
         Reel[] reels = reelSets.getSelected().getReels();
         reelSets.Spin(baseGame, stops);
+
 //        System.out.println("after reelSets.Spin");
 //        System.out.println(Arrays.toString(stops));
 
@@ -43,10 +42,11 @@ public class GridMain extends Grid {
             Reel reel = reels[i];
             for (int j = 0; j < GameConstant.GRID_HEIGHT; j++) {
                 Symbol sym = reel.symbolAt(stops[i] + j);
-                window[i][j] = sym;
+                 window[i][j] = sym;
 
                 if (sym == Symbol.WS) {
-                    wsSym.add (new SymCoordinate(i, j, sym));
+                        System.out.println("WS mila at: " + i + "," + j);
+                        wsSym.add(new SymCoordinate(i, j, sym));
                         count++;
 
 
@@ -54,7 +54,7 @@ public class GridMain extends Grid {
             }
         }
 
-        System.out.println("fresh spin");
+       System.out.println("fresh spin");
     }
 
 

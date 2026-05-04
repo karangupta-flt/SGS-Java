@@ -1,4 +1,6 @@
 package Game.Round;
+import java.util.ArrayList;
+import java.util.List;
 
 import Game.Bet.BetMode;
 import Game.DataDef.*;
@@ -6,6 +8,8 @@ import Game.DataDef.*;
 import Game.Grid.Pair;
 import Game.Grid.GridMain;
 import Game.ReelSets.ReelSetMain;
+import Game.Symbols.Symbol;
+import Game.Grid.*;
 
 
 import static Game.Constant.GameConstant.MAX_SCATTER_COUNT;
@@ -16,10 +20,11 @@ import static Game.DataDef.FreeSpinStatus.*;
 public class RoundMain extends Round {
     public RoundMain(PlayResponse playResponse, GridMain grid) {
         super(playResponse, grid);
-//        this.playResponse = playResponse;
-//        this.grid = grid;
+        this.playResponse = playResponse;
+        this.grid = grid;
 
     }
+    public int newWS;
 
     @Override
     public void Play() {
@@ -150,34 +155,32 @@ public class RoundMain extends Round {
     }
 
 
+    public static final int NUM_FREE_SPINS = 8;
 
+    @Override
+    public void runFreeSpins(int fsLevel, long refWinsSoFar) {
 
-   // public static final int NUM_FREE_SPINS = 8;
+        int numSpins = NUM_FREE_SPINS;
+        long totalWins = playResponse.baseSpin.refWinAmount;
+        long runningWinAmount = refWinsSoFar;
 
-//    @Override
-//    public void runFreeSpins(int fsLevel, long refWinsSoFar) {
-//
-//        int numSpins = NUM_FREE_SPINS;
-//        long totalWins = playResponse.baseSpin.refWinAmount;
-//        long runningWinAmount = refWinsSoFar;
-//
-//        FsStatus fsStatus = playResponse.fsStatus.get(playResponse.fsStatus.size() - 1);
-//
-//        Symbol specialSym;
-//        Symbol symRemaining ;
-//
-//        grid.selectReelSet(mode, false, fsLevel);
-//        String reelSet = grid.getReelSetName();
-//
-//        Symbol symRemaining = makeSymVector();
-//        specialSym = selectSpecialSym(fsLevel, symRemaining);
-//
-//        long winsFromFS = 0;
-//        int wsFromPrevFreeSpin = 0;
-//
-//        for (int i=0; i< numSpins; i++){                            //this loop executing free spin.
-//            System.out.println("free Spin: "+i);
-//            FreeSpin freeSpin;
+        FsStatus fsStatus = playResponse.fsStatus.get(playResponse.fsStatus.size() - 1);
+
+        Symbol specialSym;
+        Symbol symRemaining;
+
+        grid.selectReelSet(mode, false, fsLevel);
+        String ReelSets = grid.getReelSetName();
+
+        makeSymVector(symRemaining);
+        selectSpecialSym(fsLevel, symRemaining, specialSym);
+
+        long winsFromFS = 0;
+        int WsFromPrevFreeSpin = 0;
+
+        for (int i = 0; i < numSpins; i++) {                            //this loop executing free spin.
+            System.out.println("free Spin: " + i);
+            FreeSpin freeSpin = null;
 
 
             /*
@@ -187,32 +190,75 @@ public class RoundMain extends Round {
              *     and activates additional special symbol(s).
              */
 
-//            int WsFromPrevFreeSpin = 0;
-//            if (WsFromPrevFreeSpin >=3){
-//                 selectSpecialSym(numWsFsLevel(WsFromPrevFreeSpin), symRemaining, specialSym);
-//             }
-//            /* guranteed win ReelSet based on special Symbol*/.
-//
-//            if (i == numSpins -1 && winsFromFS ==0){
-//                if(specialSym.size() <=0)
-//                    throw new IllegalStateException ("no special symbols but we are in freeSpins");
-//
-//                int index = rng.getScaled(specialSym.size());
-//
-//                Symbol gWinSym = specialSym.get(index);
-//
-//                freeSpin.guaranteedWinSym = gWinSym.getCode();
-//
-//                grid.selectSpecialReelset(gWinSym);
-//
-//                reelSet = grid.getReelSetName();
-//            }
-//            freeSpin.reelSet = reelSet;
-//
-//
-//        }
-//
-//    }
+
+            if (WsFromPrevFreeSpin >= 3) {
+                selectSpecialSym(numWsFsLevel(WsFromPrevFreeSpin), symRemaining, specialSym);
+            }
+
+
+            /* Guaranteed win ReelSet based on special Symbol */
+
+            if (i == numSpins - 1 && winsFromFS == 0) {
+                if (specialSym.size() <= 0)
+                    throw new IllegalStateException("no special symbols but we are in freeSpins");
+
+                    int index = (int) Math.random() * (specialSym.size());
+                    Symbol gWinSym = specialSym.get(index);
+                    freeSpin.guaranteedWinSym = gWinSym.getCode();
+
+                    grid.selectSpecialReelSet(gWinSym);
+
+                    ReelSets = grid.getReelSetName();
+
+            }
+
+            freeSpin.reelSet = ReelSets;
+
+            // ToDo : in the spin ->grid ->winnings, trim the winnings array on max-win- triggered
+            spinResult result = Spin(false, freeSpin, runningWinAmount);
+
+            freeSpin.index = i;
+            freeSpin.refBaseWinAmount = refWinAmount;
+            freeSpin.refWinAmount = refWinAmount;
+            runningWinAmount += refWinAmount;
+            freeSpin.refWinsSoFar = runningWinAmount;
+
+            // check for max- win trigger here that might be caused by base-win- amount.
+            if (freeSpin.maxWinTriggered) {
+                playResponse.freeSpins.add(freeSpin);
+                break;
+            }
+
+            if (newWS >= 3) {
+                System.out.println("[freeSpin] newWS =  %d\n", newWS);
+                numSpins += NUM_FREE_SPINS;
+                wsFromPrevFreespin = newWS;
+            }
+
+            freeSpin.SpecialSymbol = specialSym;
+            freeSpin.refSsWinAmount = getWinningsFromSpecialSymbols(freeSpin, runningWinAmount);
+            freeSpin.refWinAmount += freeSpin.refSsWinAmount;
+            runningWinAmount += freeSpin.ssWinAmount;
+            freeSpin.refWinsSoFar = runningWinAmount;
+            totalWins += freeSpin.refWinAmount;
+            winsFromFS += freeSpin.refWinAmount;
+
+            playResponse.freeSpins.add(freeSpin);
+
+            if (freeSpin.maxWinTriggered){
+                break;
+            }
+
+            fsStatus.status  = COLLECTED;
+            playResponse.ended = true;
+            playResponse.subGameTriggered = false;
+            playResponse.maxWinTriggered = playResponse.freeSpins.get(playResponse.freeSpins.size() - 1).maxWinTriggered;
+
+
+
+
+        }
+    }
 
 
     @Override
@@ -226,7 +272,12 @@ public class RoundMain extends Round {
 //            s.wsSym = new SymCoordinate[50];
 //        }
         //BaseSpin Spin = playResponse.baseSpin;
+        s.wsSym.clear();
         grid.Spin(baseGame, s.stops, s.wsSym);
+        playResponse.wsSym = new ArrayList<>(s.wsSym);
+
+
+
 
         long maxWinAmount = playResponse.refBetBase * MAX_WIN_CAP;
         long refWinAmount = grid.getWinnings(s.winnings, playResponse.refBetBase);
@@ -240,12 +291,16 @@ public class RoundMain extends Round {
 
         grid.snapshot(s.window);
 
-        int numWS = 0;
-        for (SymCoordinate sym : s.wsSym){
-            if(sym != null) numWS++;
+        int numWS = s.wsSym.size();
 
-        }
-       // s.printSpin(); //change
+        System.out.println("WS count: " + numWS);
+        System.out.println("WS list: " + s.wsSym);
+
+//        for (SymCoordinate sym : s.wsSym){
+//            if(sym != null) numWS++;
+//
+//        }
+//        s.printSpin(); //change
 
         return new Pair<>(refWinAmount, numWS);
     }

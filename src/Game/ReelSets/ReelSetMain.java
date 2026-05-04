@@ -147,8 +147,6 @@ import Game.Symbols.Symbol;
 
          Reel[] reels = selected.getReels();
          int[] stops = new int[GameConstant.REEL_COUNT];
-
-
          for (int i = 0; i < reels.length; i++) {
              Reel reel = reels[i];
              stops[i] = reel.stopPos();

@@ -9,13 +9,8 @@ public class LineWinData {
     public int totalCount;
     public int WSCount;
 
-    public List<SymCoordinate> symCoordinateVec = new ArrayList<>();
+   ;
 
-//    public LineWinData(Symbol symbol, int totalCount, int WSCount) {
-//        this.symbol = symbol;
-//        this.totalCount = totalCount;
-//        this.WSCount = WSCount;
-//    }
 
     public LineWinData() {
 

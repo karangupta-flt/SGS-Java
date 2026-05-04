@@ -17,8 +17,8 @@ import Game.Grid.GridMain;
         // References to core systems
         protected PlayResponse playResponse;
         protected GridMain grid;
-        public static final long refWinAmount = 0;
-        public static int numWS = 0;
+        public long refWinAmount = 0;
+        public int numWS = 0;
 
         // Game state
         protected int mode;

@@ -35,7 +35,7 @@ import static Game.Constant.GameConstant.REEL_COUNT;
                  Symbol[][] window,
                  List winnings,
                  int[] stops,
-                 SymCoordinate[] wsSym,
+                 List wsSym,
                  boolean maxWinTriggered) {
          this.reelSet = reelSet;
          this.winAmount = winAmount;
@@ -45,7 +45,7 @@ import static Game.Constant.GameConstant.REEL_COUNT;
          this.window = window;
          this.winnings = winnings;
          this.stops = stops;
-         this.wsSym = new ArrayList<>(Arrays.asList(wsSym));
+         this.wsSym = wsSym;
          this.maxWinTriggered = maxWinTriggered;
      }
 

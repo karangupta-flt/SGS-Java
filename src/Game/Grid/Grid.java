@@ -32,9 +32,9 @@ import java.util.List;
         reelSets.select(mode, baseSpin, fsLevel);
     }
 
-    public void selectSpecialReelSet(Symbol specialSymbol) {
+    public void selectSpecialReelSet(Symbol specialSym) {
 
-        reelSets.selectSpecialReelSet(specialSymbol);
+        reelSets.selectSpecialReelSet(specialSym);
     }
 
     public String getReelSetName() {
@@ -73,5 +73,6 @@ import java.util.List;
         int count = 0;
         return new Pair<>(symbol, count);
     }
+
 
  }

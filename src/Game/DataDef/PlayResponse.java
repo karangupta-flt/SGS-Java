@@ -24,9 +24,12 @@ public class PlayResponse {
     public Internal internal;
     public long winSoFar = 0;
     public long refWinSoFar= 0;
+    public List<SymCoordinate> wsSym = new ArrayList<>();
 
     public PlayResponse() {
       this.baseSpin =  new BaseSpin();
+
+
 
     }
 
@@ -48,12 +51,10 @@ public class PlayResponse {
         System.out.println("GridWindow :"+ Arrays.deepToString(this.baseSpin.window));
         System.out.println("winnings :" + this.baseSpin.winnings);
         System.out.println("stops positions : "+ Arrays.toString(this.baseSpin.stops));
-//        System.out.println("Size of symCoordinateVec: " + this.wsSym.size());
-//        for (SymCoordinate coord : this.wsSym) {
-//            System.out.println("wsSym : "+ coord);
 
-      //  }
-        //System.out.println("wsSym : "+ wsSym);
+
+        System.out.println("wsSym : "+ wsSym);
+
 
 
 
