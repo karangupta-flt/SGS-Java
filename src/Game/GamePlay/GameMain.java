@@ -174,12 +174,12 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
                 w.winAmount = w.refWinAmount * currMp;
             }
 
-            for (SpecialSymWins sw : f.SpecialSymWinnings) {
+            for (SpecialSymWins sw : f.ssWinnings) {
 
                 sw.winAmount = sw.refWinAmount * currMp;
                 sw.winsSoFar = sw.refWinsSoFar * currMp;
 
-                for (Winning w : sw.Winnings) {
+                for (Winning w : sw.winnings) {
                     w.winAmount = w.refWinAmount * currMp;
                 }
             }

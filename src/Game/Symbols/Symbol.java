@@ -43,10 +43,19 @@ public enum Symbol {
         return code;
     }
 
-    public static Symbol fromString(String value) {
-        return SYMBOL_MAP.getOrDefault(value, INVALID);
-    }
-
+    public static final Symbol[] SYM_ARR = {
+            Symbol.WS,
+            Symbol.H1,
+            Symbol.H2,
+            Symbol.H3,
+            Symbol.H4,
+            Symbol.L5,
+            Symbol.L6,
+            Symbol.L7,
+            Symbol.L8,
+            Symbol.L9,
+            Symbol.INVALID
+    };
     public int size() {
         return 0;
     }
@@ -54,4 +63,6 @@ public enum Symbol {
     public Symbol get(int index) {
         return null;
     }
+
+
 }

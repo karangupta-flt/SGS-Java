@@ -14,10 +14,5 @@ public class FsStatus {
     }
 
 
-//    public FsStatus(int level, FreeSpinStatus freeSpinStatus, double draw) {
-//        this.level = level;
-//        this.freeSpinStatus = freeSpinStatus;
-//        this.draw = draw;
-//
-//    }
+
 }

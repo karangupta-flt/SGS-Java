@@ -218,7 +218,7 @@ public class GridMain extends Grid {
 
                 if (maxWinTriggered){
 
-                specialSymWins.Winnings.add(win);
+                specialSymWins.winnings.add(win);
                     break;
                 }
 
@@ -244,5 +244,6 @@ public class GridMain extends Grid {
     }
 
 
-
+    public void clear() {
+    }
 }

@@ -19,6 +19,9 @@ import Game.Grid.GridMain;
         protected GridMain grid;
         public long refWinAmount = 0;
         public int numWS = 0;
+       // public List<Symbol> symbols= new ArrayList<>();
+
+
 
         // Game state
         protected int mode;
@@ -59,12 +62,11 @@ import Game.Grid.GridMain;
         }
         protected void collect(PlayResponse playResponse) {} // Collect winnings
         protected void clear() {} // Clear round state
-        protected void selectSpecialSym(int numWS, Symbol symRemaining, Symbol specialSym) {}
+        protected void selectSpecialSym(int numWS, List<Symbol>symRemaining, List<Symbol>specialSym) {}
         protected long getWinningsFromSpecialSymbols(FreeSpin freeSpin, long winsSoFar) {
                return winsSoFar;                                             // Calculate winnings from special symbols
         }
 
         // Convert grid to symbol vector
-        protected void makeSymVector(Symbol symbols) {
-        }
+        protected void makeSymVector(List<Symbol>symbols) {}
 }

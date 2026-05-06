@@ -5,7 +5,7 @@ import java.util.*;
 
 public class SpecialSymWins {
     public Symbol Symbol;
-    public ArrayList<Winning> Winnings = new ArrayList<>();
+    public ArrayList<Winning> winnings = new ArrayList<>();
     public Symbol[][] window = new Symbol[GameConstant.REEL_COUNT][GameConstant.GRID_HEIGHT];
     public long winAmount = 0;
     public long refWinAmount = 0;
@@ -14,6 +14,7 @@ public class SpecialSymWins {
     public long winsSoFar;
     public long refWinsSoFar;
     public boolean maxWinTriggered = false;
+
 
     public SpecialSymWins(){
 

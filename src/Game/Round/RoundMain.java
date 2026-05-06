@@ -1,30 +1,38 @@
 package Game.Round;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
 
 import Game.Bet.BetMode;
 import Game.DataDef.*;
 
 import Game.Grid.Pair;
 import Game.Grid.GridMain;
-import Game.ReelSets.ReelSetMain;
+
 import Game.Symbols.Symbol;
-import Game.Grid.*;
 
 
 import static Game.Constant.GameConstant.MAX_SCATTER_COUNT;
 import static Game.Constant.GameConstant.MAX_WIN_CAP;
 import static Game.DataDef.FreeSpinStatus.*;
+import static Game.Symbols.Symbol.SYM_ARR;
 
 
-public class RoundMain extends Round {
-    public RoundMain(PlayResponse playResponse, GridMain grid) {
+ public class RoundMain extends Round {
+     public List<Symbol> specialSymbols;
+     public List<Symbol>symRemaining;
+     public Symbol sym;
+     //public List<Symbol> symRemain = new ArrayList<>();
+
+
+
+     public RoundMain(PlayResponse playResponse, GridMain grid) {
         super(playResponse, grid);
         this.playResponse = playResponse;
         this.grid = grid;
 
     }
-    public int newWS;
 
     @Override
     public void Play() {
@@ -166,17 +174,16 @@ public class RoundMain extends Round {
 
         FsStatus fsStatus = playResponse.fsStatus.get(playResponse.fsStatus.size() - 1);
 
-        Symbol specialSym;
-        Symbol symRemaining;
+
 
         grid.selectReelSet(mode, false, fsLevel);
         String ReelSets = grid.getReelSetName();
 
         makeSymVector(symRemaining);
-        selectSpecialSym(fsLevel, symRemaining, specialSym);
+        selectSpecialSym(fsLevel, symRemaining, specialSymbols);
 
         long winsFromFS = 0;
-        int WsFromPrevFreeSpin = 0;
+        int wsFromPrevFreespin = 0;
 
         for (int i = 0; i < numSpins; i++) {                            //this loop executing free spin.
             System.out.println("free Spin: " + i);
@@ -186,24 +193,24 @@ public class RoundMain extends Round {
             /*
              * Adding new special symbol(s) to current FS based on WS yield from previous one
              * PAR Sheet v2.2: tab: free spins, col: 87:
-             *     Landing 3 or more scatter symbols (WS) during free spins, gives an additional 8 spins
+             *     Landing 3 or More Scatter symbols (WS) during free spins, gives an additional 8 spins
              *     and activates additional special symbol(s).
              */
 
 
-            if (WsFromPrevFreeSpin >= 3) {
-                selectSpecialSym(numWsFsLevel(WsFromPrevFreeSpin), symRemaining, specialSym);
+            if (wsFromPrevFreespin >= 3) {
+                selectSpecialSym(numWsFsLevel(wsFromPrevFreespin), symRemaining, specialSymbols);
             }
-
+            wsFromPrevFreespin = 0;
 
             /* Guaranteed win ReelSet based on special Symbol */
 
             if (i == numSpins - 1 && winsFromFS == 0) {
-                if (specialSym.size() <= 0)
+                if (specialSymbols.size() <= 0)
                     throw new IllegalStateException("no special symbols but we are in freeSpins");
 
-                    int index = (int) Math.random() * (specialSym.size());
-                    Symbol gWinSym = specialSym.get(index);
+                    int index = (int) Math.random() * (specialSymbols.size());
+                    Symbol gWinSym = specialSymbols.get(index);
                     freeSpin.guaranteedWinSym = gWinSym.getCode();
 
                     grid.selectSpecialReelSet(gWinSym);
@@ -215,7 +222,9 @@ public class RoundMain extends Round {
             freeSpin.reelSet = ReelSets;
 
             // ToDo : in the spin ->grid ->winnings, trim the winnings array on max-win- triggered
-            spinResult result = Spin(false, freeSpin, runningWinAmount);
+            Pair<Long, Integer> result = Spin(false, freeSpin, runningWinAmount);
+            Long refWinAmount = result.getFirst();
+            Integer newWS = result.getSecond();
 
             freeSpin.index = i;
             freeSpin.refBaseWinAmount = refWinAmount;
@@ -230,12 +239,12 @@ public class RoundMain extends Round {
             }
 
             if (newWS >= 3) {
-                System.out.println("[freeSpin] newWS =  %d\n", newWS);
+                System.out.printf("[freeSpin] newWS =  %d\n", newWS);
                 numSpins += NUM_FREE_SPINS;
                 wsFromPrevFreespin = newWS;
             }
 
-            freeSpin.SpecialSymbol = specialSym;
+            freeSpin.SpecialSymbols = specialSymbols;  // add one symbol in a list.
             freeSpin.refSsWinAmount = getWinningsFromSpecialSymbols(freeSpin, runningWinAmount);
             freeSpin.refWinAmount += freeSpin.refSsWinAmount;
             runningWinAmount += freeSpin.ssWinAmount;
@@ -249,7 +258,7 @@ public class RoundMain extends Round {
                 break;
             }
 
-            fsStatus.status  = COLLECTED;
+            fsStatus.freeSpinStatus  = COLLECTED;
             playResponse.ended = true;
             playResponse.subGameTriggered = false;
             playResponse.maxWinTriggered = playResponse.freeSpins.get(playResponse.freeSpins.size() - 1).maxWinTriggered;
@@ -305,4 +314,108 @@ public class RoundMain extends Round {
         return new Pair<>(refWinAmount, numWS);
     }
 
-}
+    @Override
+    protected long getWinningsFromSpecialSymbols (FreeSpin freeSpin, long refWinSoFar) {
+        long refWinAmount = 0;
+        long runningWinAmount = refWinSoFar;
+
+        SpecialSymWins specialSymWins = null;
+        for (Symbol sym : freeSpin.SpecialSymbols) {
+            specialSymWins = new SpecialSymWins();
+            specialSymWins.Symbol = sym;
+            specialSymWins.winnings = new ArrayList<>();
+            specialSymWins.refWinAmount = 0;
+            specialSymWins.maxWinTriggered = false;
+
+
+            Pair<Long, Boolean> Result = grid.getWinsFromSpSym(sym, specialSymWins, playResponse.refBetBase, runningWinAmount);
+            Long win = Result.getFirst();
+            Boolean maxWinTriggered = Result.getSecond();
+
+            if (win != 0) {
+                refWinAmount += win;
+                runningWinAmount += win;
+                freeSpin.refWinsSoFar = runningWinAmount;
+                freeSpin.maxWinTriggered = maxWinTriggered;
+                specialSymWins.maxWinTriggered = maxWinTriggered;
+
+                freeSpin.ssWinnings.add(specialSymWins);
+
+                if (maxWinTriggered) {
+                    break;
+                }
+
+            }
+        }
+       
+        return refWinAmount;
+    }
+
+    // see PAR sheet V2.2 tab : gamble, col: e
+
+    public static final float[] LADDER_WEIGHTS = {
+            2.0f / 3,
+            0.75f,
+            0.785f,
+            0.825f,
+            0.85f,
+            0.875f,
+            0.9f,
+            0.925f
+    };
+
+    public Pair<Boolean, Float> tryGamble(int prevLevel) {
+        float successProb = LADDER_WEIGHTS[prevLevel - 1]; // or array[index]
+        float prob = (float) Math.random();
+
+        return new Pair<>(prob < successProb, prob);
+    }
+
+     protected void selectSpecialSym(int numToSelect, List<Symbol>symRemaining, List<Symbol>specialSym) {
+         if (numToSelect < 0) {
+             throw new IllegalArgumentException("cannot select special symbol since numToSelect < 0");
+         }
+
+         if (symRemaining == null) {
+             return;
+         }
+
+         for (int i = 0; i < numToSelect; i++) {
+             int rand = (int) (Math.random() * symRemaining.size());
+
+             Symbol special = symRemaining.get(rand);
+             symRemaining.remove(rand);   // remove so it doesn't repeat
+             specialSym.add(special);
+
+//             System.out.printf(
+//                     "[freeSpin] adding special symbol = %s (numToSelect = %d)%n",
+//                     SymbolChar[special.ordinal()], // adjust if your mapping is different
+//                     numToSelect
+//             );
+
+             if (symRemaining.isEmpty()) {
+                 break;
+             }
+         }
+     }
+     @Override
+     protected void makeSymVector(List<Symbol> symbols) {
+
+             for (int i = Symbol.H1.ordinal(); i < Symbol.INVALID.ordinal(); i++) {
+
+                 symbols.add(SYM_ARR[i]);
+             }
+    }
+
+    @Override
+    protected void clear(){
+        grid.clear();
+    }
+
+
+
+
+
+
+
+ }
