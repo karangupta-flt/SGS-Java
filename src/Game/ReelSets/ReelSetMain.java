@@ -3,7 +3,7 @@ package Game.ReelSets;
 import Game.Bet.BetMode;
 import Game.Constant.GameConstant;
 import Game.Reel.Reel;
-import Game.Round.Round;
+
 import Game.Symbols.Symbol;
 //import Game.Reel.ReelMain;
 
@@ -11,19 +11,6 @@ import Game.Symbols.Symbol;
 
 
  public class ReelSetMain extends ReelSets{
-
-//     private static final Set BG_Set1 = new Set(0, "BG_Set1", new Reel[0]);
-//     private static final Set BG_Set2 = new Set(1, "BG_Set2", new Reel[0]);
-//     private static final Set BG_Set3 = new Set(2, "BG_Set3", new Reel[0]);
-//     private static final Set FS_Set1 = new Set(3, "FS_Set1", new Reel[0]);
-//     private static final Set FS_Set2 = new Set(4, "FS_Set2", new Reel[0]);
-//     private static final Set FS_Set3 = new Set(5, "FS_Set3", new Reel[0]);
-//     private static final Set FS_Set4 = new Set(6, "FS_Set4", new Reel[0]);
-//     private static final Set FS_Set5 = new Set(7, "FS_Set5", new Reel[0]);
-
-
-
-
 
      public ReelSetMain(Set[] BG_Set, Set[] FS_Set) {
         super(BG_Set, FS_Set);
@@ -134,7 +121,7 @@ import Game.Symbols.Symbol;
             Reel reel = reels[i];
             int stop = reel.Spin();
             stops[i] = stop;
-           // System.out.println("stop position : "+ stops[i]);
+
         }
 
 

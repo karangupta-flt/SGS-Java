@@ -31,12 +31,6 @@ public class GridMain extends Grid {
         Reel[] reels = reelSets.getSelected().getReels();
         reelSets.Spin(baseGame, stops);
 
-//        System.out.println("after reelSets.Spin");
-//        System.out.println(Arrays.toString(stops));
-
-//        for (int i = 0; i< stops.length; i++){
-//            System.out.println("Reel" + i + "stop = "+ reels[i].stopPos());
-//        }
 
         for (int i = 0; i < stops.length; i++) {
             Reel reel = reels[i];
@@ -45,7 +39,7 @@ public class GridMain extends Grid {
                  window[i][j] = sym;
 
                 if (sym == Symbol.WS) {
-                        System.out.println("WS mila at: " + i + "," + j);
+                       // System.out.println("WS mila at: " + i + "," + j);
                         wsSym.add(new SymCoordinate(i, j, sym));
                         count++;
 
@@ -54,7 +48,7 @@ public class GridMain extends Grid {
             }
         }
 
-       System.out.println("fresh spin");
+      // System.out.println("fresh spin");
     }
 
 
@@ -75,10 +69,8 @@ public class GridMain extends Grid {
         for(int i =0; i< window.length; i++){
             for(int j = 0; j< window[i].length; j++) {
                 grid[i][j]=window[i][j];
-                //GridWindow[i][j] = GridWindow[i][j];
-//                System.out.println(grid[i][j] + " ");
+
             }
-            //System.out.println();
         }
     }
 
@@ -90,11 +82,11 @@ public class GridMain extends Grid {
         long refWinAmount = 0;
 
         for (int i = 0; i < payLines.length; i++) {
-            System.out.println("Evalutaing payline : "+ i+ "\n");
+           // System.out.println("Evalutaing payline : "+ i+ "\n");
             PayLines.payLine = payLines[i];                 //current payLine
-            for (int j = 0; j < PayLines.payLine.length; j++) {
-                System.out.println("payline : "+ payLine[j]);
-            }
+//            for (int j = 0; j < PayLines.payLine.length; j++) {
+//                System.out.println("payline : "+ payLine[j]);
+//            }
             LineWinData winData = new LineWinData();
 
             PayTable.evaluateLine(window, payLine, i, winData);
@@ -198,7 +190,7 @@ public class GridMain extends Grid {
 
             int multi  = payTblItem[symCount - 2];
             if (multi == 0 || maxWinTriggered)
-                return  new Pair<>(0L, maxWinTriggered);
+                return new Pair<>(0L, maxWinTriggered);
 
             for (int i = 0; i< PayLines.length; i++){
                 win.type = "speacial";

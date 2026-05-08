@@ -105,7 +105,7 @@ import static Game.Symbols.Symbol.SYM_ARR;
 
         }
         // Else collect
-        //return collect(playResponse);
+        collect(playResponse);
     }
     public int numWsFsLevel(int numWS){
 
@@ -187,7 +187,11 @@ import static Game.Symbols.Symbol.SYM_ARR;
 
         for (int i = 0; i < numSpins; i++) {                            //this loop executing free spin.
             System.out.println("free Spin: " + i);
-            FreeSpin freeSpin = null;
+            FreeSpin freeSpin = new FreeSpin();
+
+//            System.out.println(freeSpin.stops);
+//            System.out.println(freeSpin.wsSym);
+//            System.out.println(freeSpin.window);
 
 
             /*
@@ -209,7 +213,7 @@ import static Game.Symbols.Symbol.SYM_ARR;
                 if (specialSymbols.size() <= 0)
                     throw new IllegalStateException("no special symbols but we are in freeSpins");
 
-                    int index = (int) Math.random() * (specialSymbols.size());
+                    int index = (int) (Math.random() * (specialSymbols.size()));
                     Symbol gWinSym = specialSymbols.get(index);
                     freeSpin.guaranteedWinSym = gWinSym.getCode();
 
@@ -270,6 +274,8 @@ import static Game.Symbols.Symbol.SYM_ARR;
     }
 
 
+
+
     @Override
     public Pair<Long,Integer> Spin(boolean baseGame, Spin s, long refWinsSoFar) {
 
@@ -297,13 +303,15 @@ import static Game.Symbols.Symbol.SYM_ARR;
 
         s.maxWinTriggered = maxWinTriggered;
         s.refWinsSoFar = refWinsSoFar + refWinAmount;
+       // playResponse.refWinSoFar = s.refWinsSoFar;
+        //System.out.println("Ref Wins So Far = " + s.refWinsSoFar); //debug refWinSoFar
 
         grid.snapshot(s.window);
 
         int numWS = s.wsSym.size();
 
-        System.out.println("WS count: " + numWS);
-        System.out.println("WS list: " + s.wsSym);
+          System.out.println("WS count: " + numWS);
+//        System.out.println("WS list: " + s.wsSym);
 
 //        for (SymCoordinate sym : s.wsSym){
 //            if(sym != null) numWS++;

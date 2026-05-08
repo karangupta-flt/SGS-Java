@@ -1,7 +1,8 @@
 package Game.DataDef;
 
-//import Game.RNG.RandRecord;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Internal {
-  //  List<RandRecord> rHistory = new ArrayList<>();
+public class Internal<RandRecord> {
+  List<RandRecord> rHistory = new ArrayList<>();
 }

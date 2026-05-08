@@ -13,7 +13,6 @@ import Game.Grid.GridMain;
 
 import java.util.HashMap;
 import java.util.Map;
-import Game.Grid.Pair;
 
 import static Game.Bet.BetConfig.*;
 import static Game.Constant.GameConstant.MAX_WIN_CAP;
@@ -153,10 +152,12 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
 
         // play response
         r.winAmount = r.refWinAmount * currMp;
-
         // base-spin
         r.baseSpin.winAmount = r.baseSpin.refWinAmount * currMp;
         r.baseSpin.winsSoFar = r.baseSpin.refWinsSoFar * currMp;
+        r.winSoFar = r.baseSpin.winsSoFar;
+        r.refWinSoFar = r.baseSpin.refWinsSoFar;
+        //System.out.println("winSoFar is found  :" +r.winSoFar); //debug of winSoFar and refWinSoFar
 
         for (Winning w : r.baseSpin.winnings) {
             w.winAmount = w.refWinAmount * currMp;
@@ -225,10 +226,10 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
              throw new IllegalArgumentException("invalid featureMode: " + mode);
          }
 
-         if ((!buyFeature && featureMode != 0) ||
-                 (buyFeature && featureMode == 0)) {
-             throw new IllegalArgumentException("incompatible feature mode and buy");
-         }
+//         if ((!buyFeature && featureMode != 0) ||
+//                 (buyFeature && featureMode == 0)) {
+//             throw new IllegalArgumentException("incompatible feature mode and buy");
+//         }
 
          Map<Integer, Boolean> betSizeMap = betmap.get(mode);
 

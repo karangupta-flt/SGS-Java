@@ -1,7 +1,5 @@
 package Game.PayTable;
 
-import Game.DataDef.Coordinate;
-import Game.DataDef.LineWinData;
 import Game.DataDef.PayTbl;
 import Game.PayLines.PayLines;
 import Game.Symbols.Symbol;
@@ -130,9 +128,7 @@ import java.util.List;
 //     public static void evaluateLine(Symbol[][] window, int[] payLine, int id, LineWinData winData) {
 //     }
 
-//     public static List<Coordinate> getCoords(int[] payLine, int symCount) {
-//         return null;
-//     }
+
 
 
 

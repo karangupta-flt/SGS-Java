@@ -1,5 +1,4 @@
 package Game.DataDef;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,12 +21,13 @@ public class PlayResponse {
     public boolean maxWinTriggered = false;
     public long currencyMultiplier = -1;
     public Internal internal;
-    public long winSoFar = 0;
-    public long refWinSoFar= 0;
+    public long winSoFar ;
+    public long refWinSoFar;
     public List<SymCoordinate> wsSym = new ArrayList<>();
 
     public PlayResponse() {
       this.baseSpin =  new BaseSpin();
+
 
 
 
@@ -40,20 +40,32 @@ public class PlayResponse {
         System.out.println("refBetAmount :"+ refBetAmount);
         System.out.println("winAmount :" + this.winAmount);
         System.out.println("refWinAmount :" + this.refWinAmount);
-        System.out.println("maxWinTriggered : " + this.maxWinTriggered);
         System.out.println("ended : " + this.ended);
         System.out.println("action : "+ this.action);
         System.out.println("featureMode :" + this.featureMode);
         System.out.println("subGameTriggered : " + this.subGameTriggered);
-        System.out.println("winSoFar :" + this.winSoFar);
-        System.out.println("refWinSoFar :"+ this.refWinSoFar);
-        System.out.println("SpinType :" + this.baseSpin.spinType);
-        System.out.println("GridWindow :"+ Arrays.deepToString(this.baseSpin.window));
-        System.out.println("winnings :" + this.baseSpin.winnings);
-        System.out.println("stops positions : "+ Arrays.toString(this.baseSpin.stops));
+        System.out.println("fsStatus : "+this.fsStatus);
+        System.out.println();
 
+        System.out.println("baseSpin: {");
+        System.out.println("  winAmount : "+ this.winAmount);
+        System.out.println("  refWinAmount : " + this.refWinAmount);
+        System.out.println("  maxWinTriggered : " + this.maxWinTriggered);
+        System.out.println("  winSoFar :" + this.winSoFar);
+        System.out.println("  refWinSoFar :"+ this.refWinSoFar);
+        System.out.println("  GridWindow :"+ Arrays.deepToString(this.baseSpin.window));
+        System.out.println("  winnings :" + this.baseSpin.winnings);
+        System.out.println("  stops positions : "+ Arrays.toString(this.baseSpin.stops));
+        System.out.println("  wsSym : "+ wsSym);
+        System.out.println("  SpinType :" + this.baseSpin.spinType);
+        System.out.println("}");
 
-        System.out.println("wsSym : "+ wsSym);
+        System.out.println(" freeSpins {");
+
+        System.out.println(" freeSpins : "+ this.freeSpins);
+        System.out.println(" internal : "+ this.internal);
+        System.out.println("}");
+
 
 
 
