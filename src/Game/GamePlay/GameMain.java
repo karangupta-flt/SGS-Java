@@ -19,6 +19,11 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
 
  public class GameMain extends GamePlay{
 
+
+     private GridMain grid;
+     private RoundMain roundMain;
+     private PlayResponse playResponse;
+
      private Map<BetMode, Map<Integer, Boolean>> betmap = new HashMap<>();
 
 
@@ -26,6 +31,9 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
      public GameMain() {
          reelSets = initReels();
          createBetMap();
+         playResponse = new PlayResponse();
+         grid = new GridMain(reelSets);
+         roundMain = new RoundMain(playResponse, grid);
 
      }
 
@@ -128,7 +136,7 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
         RoundMain round = new RoundMain(playResponse, grid);
 
         try {
-            round.next((Boolean) next.getGamble(), false);
+            round.next((Boolean) next.getGamble(),false);
             collectRands(playResponse);
             playResponse.refWinAmount = calculateWins(playResponse);
         }
@@ -340,4 +348,9 @@ import static Game.Constant.GameConstant.MAX_WIN_CAP;
                 new Set[] {FS_Set1, FS_Set2, FS_Set3, FS_Set4, FS_Set5}
         );
     }
+
+     public RoundMain getRoundMain() {
+         return roundMain;
+
+     }
  }

@@ -24,6 +24,7 @@ public class GridMain extends Grid {
     }
 
 
+
     @Override //this code is for grid window.
     public void Spin(boolean baseGame, int[] stops, List<SymCoordinate> wsSym) {
         int count = 0;
@@ -36,6 +37,12 @@ public class GridMain extends Grid {
             Reel reel = reels[i];
             for (int j = 0; j < GameConstant.GRID_HEIGHT; j++) {
                 Symbol sym = reel.symbolAt(stops[i] + j);
+                // DEBUG PRINT
+//                System.out.println(
+//                        "Reel = " + i +
+//                                " Row = " + j +
+//                                " Symbol = " + sym
+//                );
                  window[i][j] = sym;
 
                 if (sym == Symbol.WS) {
@@ -48,7 +55,6 @@ public class GridMain extends Grid {
             }
         }
 
-      // System.out.println("fresh spin");
     }
 
 

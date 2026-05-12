@@ -26,6 +26,10 @@ import Game.Symbols.Symbol;
     public static final double W_ENHANCED_PROB= 0.52026;
     public static final double[] W_FREE_SPIN = new double[]{0.6546, 0.4951, 0.3795, 0.4876, 0.5631, 0.6732, 0.7517, 0.7859, 0.8834};
 
+//     public ReelSetMain() {
+//
+//     }
+
 
 //   // static {
 //        switch (CURRENT_VARIANT) {

@@ -1,4 +1,6 @@
 package Game.Symbols;
+import java.util.ArrayList;
+import java.util.*;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -43,7 +45,7 @@ public enum Symbol {
         return code;
     }
 
-    public static final Symbol[] SYM_ARR = {
+    public static final List<Symbol> SYM_ARR = Arrays.asList(
             Symbol.WS,
             Symbol.H1,
             Symbol.H2,
@@ -55,14 +57,14 @@ public enum Symbol {
             Symbol.L8,
             Symbol.L9,
             Symbol.INVALID
-    };
+    );
     public int size() {
         return 0;
     }
 
-    public Symbol get(int index) {
-        return null;
-    }
+//    public Symbol get(int index) {
+//        return null;
+//    }
 
 
 }

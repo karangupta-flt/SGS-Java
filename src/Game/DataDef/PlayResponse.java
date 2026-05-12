@@ -56,11 +56,12 @@ public class PlayResponse {
         System.out.println("  GridWindow :"+ Arrays.deepToString(this.baseSpin.window));
         System.out.println("  winnings :" + this.baseSpin.winnings);
         System.out.println("  stops positions : "+ Arrays.toString(this.baseSpin.stops));
-        System.out.println("  wsSym : "+ wsSym);
+        System.out.println("  wsSym : "+ this.baseSpin.wsSym);
+
         System.out.println("  SpinType :" + this.baseSpin.spinType);
         System.out.println("}");
 
-        System.out.println(" freeSpins {");
+        System.out.println("freeSpins {");
 
         System.out.println(" freeSpins : "+ this.freeSpins);
         System.out.println(" internal : "+ this.internal);

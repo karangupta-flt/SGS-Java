@@ -3,19 +3,18 @@ package Game.Round;
 import Game.DataDef.FreeSpin;
 import Game.DataDef.PlayResponse;
 import Game.DataDef.Spin;
-import Game.Grid.Grid;
 import Game.Symbols.Symbol;
 import Game.Grid.Pair;
 import java.util.ArrayList;
 import java.util.List;
-import Game.DataDef.Winning;
+
 import Game.Grid.GridMain;
 
 
  public  class Round {
 
         // References to core systems
-        protected PlayResponse playResponse;
+        public PlayResponse playResponse;
         protected GridMain grid;
         public long refWinAmount = 0;
         public int numWS = 0;
@@ -32,9 +31,17 @@ import Game.Grid.GridMain;
             this.playResponse = playResponse;
             this.grid = grid;
         }
+
+        public Round() {
+
+        }
+
+
+
         // Start round
         public void Play() {}
-        public void next(boolean gamble, boolean succeed) {}
+        public void next(boolean gamble, boolean succeed) {
+        }
 
         // Base spin execution
         protected int runBaseSpin(long winsSoFar) {
@@ -68,5 +75,7 @@ import Game.Grid.GridMain;
         }
 
         // Convert grid to symbol vector
-        protected void makeSymVector(List<Symbol>symbols) {}
-}
+        protected void makeSymVector(List<Symbol> symbols) {}
+
+
+ }

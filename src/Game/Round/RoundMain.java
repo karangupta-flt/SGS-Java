@@ -1,6 +1,6 @@
 package Game.Round;
 import java.util.ArrayList;
-import java.util.Collections;
+
 import java.util.List;
 
 
@@ -10,6 +10,7 @@ import Game.DataDef.*;
 import Game.Grid.Pair;
 import Game.Grid.GridMain;
 
+import Game.ReelSets.ReelSetMain;
 import Game.Symbols.Symbol;
 
 
@@ -23,6 +24,7 @@ import static Game.Symbols.Symbol.SYM_ARR;
      public List<Symbol> specialSymbols;
      public List<Symbol>symRemaining;
      public Symbol sym;
+     public SpecialSymWins specialSymWins;
      //public List<Symbol> symRemain = new ArrayList<>();
 
 
@@ -34,7 +36,23 @@ import static Game.Symbols.Symbol.SYM_ARR;
 
     }
 
-    @Override
+     public RoundMain() {
+         super();
+     }
+
+//     public RoundMain() {
+//         super();
+//
+//             ReelSetMain reelSetMain = new ReelSetMain();
+//
+//             this.grid = new GridMain(reelSetMain);
+//
+//             this.playResponse = new PlayResponse();
+//
+//     }
+
+
+     @Override
     public void Play() {
 
         //clear();
@@ -72,6 +90,7 @@ import static Game.Symbols.Symbol.SYM_ARR;
     public static final int MAX_FS_LVL = 9;
     @Override
     public void next(boolean gamble, boolean succeed) {
+        //PlayResponse playResponse = new PlayResponse();
         if(playResponse.fsStatus.size() <=0)
             throw new IllegalStateException("next called but fsStatus array is zero sized");
 
@@ -116,7 +135,6 @@ import static Game.Symbols.Symbol.SYM_ARR;
         if (playResponse.fsStatus.size() <=0)
             throw new IllegalStateException("next called but fsStatus array is zero sized");
         FsStatus prevFsStatus = playResponse.fsStatus.get(playResponse.fsStatus.size() - 1);
-
         runFreeSpins(prevFsStatus.level, playResponse.baseSpin.refWinsSoFar);
 
     }
@@ -179,6 +197,11 @@ import static Game.Symbols.Symbol.SYM_ARR;
         grid.selectReelSet(mode, false, fsLevel);
         String ReelSets = grid.getReelSetName();
 
+
+        symRemaining = new ArrayList<>();
+
+        specialSymbols = new ArrayList<>();
+
         makeSymVector(symRemaining);
         selectSpecialSym(fsLevel, symRemaining, specialSymbols);
 
@@ -188,10 +211,10 @@ import static Game.Symbols.Symbol.SYM_ARR;
         for (int i = 0; i < numSpins; i++) {                            //this loop executing free spin.
             System.out.println("free Spin: " + i);
             FreeSpin freeSpin = new FreeSpin();
+            freeSpin.SpecialSymbols = new ArrayList<>();
+            freeSpin.reelSet = ReelSets;
+            playResponse.freeSpins.add(freeSpin);
 
-//            System.out.println(freeSpin.stops);
-//            System.out.println(freeSpin.wsSym);
-//            System.out.println(freeSpin.window);
 
 
             /*
@@ -256,7 +279,7 @@ import static Game.Symbols.Symbol.SYM_ARR;
             totalWins += freeSpin.refWinAmount;
             winsFromFS += freeSpin.refWinAmount;
 
-            playResponse.freeSpins.add(freeSpin);
+           // playResponse.freeSpins.add(freeSpin);
 
             if (freeSpin.maxWinTriggered){
                 break;
@@ -289,7 +312,13 @@ import static Game.Symbols.Symbol.SYM_ARR;
         //BaseSpin Spin = playResponse.baseSpin;
         s.wsSym.clear();
         grid.Spin(baseGame, s.stops, s.wsSym);
-        playResponse.wsSym = new ArrayList<>(s.wsSym);
+        //System.out.println("AFTER GRID SPIN = " + s.wsSym);
+        //System.out.println("s.wsSym = " + s.wsSym);
+
+        playResponse.baseSpin.wsSym = new ArrayList<>(s.wsSym);
+        //System.out.println("baseSpin.wsSym = " + playResponse.baseSpin.wsSym);
+        //playResponse.wsSym = new ArrayList<>(s.wsSym);
+
 
 
 
@@ -327,7 +356,8 @@ import static Game.Symbols.Symbol.SYM_ARR;
         long refWinAmount = 0;
         long runningWinAmount = refWinSoFar;
 
-        SpecialSymWins specialSymWins = null;
+
+
         for (Symbol sym : freeSpin.SpecialSymbols) {
             specialSymWins = new SpecialSymWins();
             specialSymWins.Symbol = sym;
@@ -408,11 +438,23 @@ import static Game.Symbols.Symbol.SYM_ARR;
      }
      @Override
      protected void makeSymVector(List<Symbol> symbols) {
-
              for (int i = Symbol.H1.ordinal(); i < Symbol.INVALID.ordinal(); i++) {
 
-                 symbols.add(SYM_ARR[i]);
+                 symbols.add(SYM_ARR.get(i));
              }
+//         if(symbols == null){
+//             symbols = new ArrayList<>();
+//         }
+//
+//
+//         for (Symbol sym : Symbol.values()) {
+//
+//                 if (sym != Symbol.INVALID) {
+//
+//                     symbols.add(sym);
+//                 }
+//             }
+
     }
 
     @Override

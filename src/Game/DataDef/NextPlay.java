@@ -2,9 +2,9 @@ package Game.DataDef;
 
 public class NextPlay {
 
-        public boolean Gamble;
+        public boolean gamble;
 
-        public Object getGamble()  {
-                return null;
+        public boolean getGamble()  {
+                return gamble;
         }
 }

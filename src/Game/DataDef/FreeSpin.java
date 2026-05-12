@@ -45,4 +45,21 @@ import java.util.List;
      public FreeSpin() {
 
      }
+     @Override
+     public String toString() {
+
+         return "FreeSpin{" +
+                 "spinType='" + spinType + '\'' +
+                 ", winAmount=" + winAmount +
+                 ", refWinAmount=" + refWinAmount +
+                 ", reelSet='" + reelSet + '\'' +
+                 ", guaranteedWinSym=" + guaranteedWinSym +
+                 ", SpecialSymbols=" + SpecialSymbols +
+                 ", baseWinAmount=" + baseWinAmount +
+                 ", refBaseWinAmount=" + refSsWinAmount +
+                 ", ssWinAMount=" + ssWinAmount +
+                 ", refSsWinAmount=" + refSsWinAmount +
+                 ", index=" + index +
+                 '}';
+     }
  }
